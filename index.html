@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xayrullo Ota Savdo Markazi</title>
+    <!-- Telegram Web App Script -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        /* SIZ TANLAGAN NAVY BLUE + ORANGE DIZAYN TIZIMI */
+        :root {
+            --navy-blue: #0B192C;
+            --white: #FFFFFF;
+            --light-gray: #F4F6F9;
+            --orange: #FF6B00;
+            --text-color: #333333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--light-gray);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+
+        /* Header (image_47a8fb.png dizayni asosida) */
+        .header {
+            background-color: var(--navy-blue);
+            color: var(--white);
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Filter Pills (image_47a8fb.png dizayni asosida) */
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            padding: 12px;
+            overflow-x: auto;
+            background-color: var(--white);
+            position: sticky;
+            top: 53px;
+            z-index: 99;
+        }
+
+        .pill {
+            background-color: var(--light-gray);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .pill.active {
+            background-color: var(--navy-blue);
+            color: var(--white);
+        }
+
+        /* Product Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 12px;
+            padding-bottom: 90px; /* Pastki bar yopib qo'ymasligi uchun */
+        }
+
+        /* Product Card */
+        .card {
+            background-color: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .badge-discount {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: var(--orange);
+            color: var(--white);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            background-color: #eee;
+        }
+
+        .card-body {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin: 0 0 4px 0;
+            height: 36px;
+            overflow: hidden;
+        }
+
+        .card-stock {
+            font-size: 0.75rem;
+            color: #777;
+            margin-bottom: 8px;
+        }
+
+        .price-section {
+            margin-top: auto;
+        }
+
+        .old-price {
+            font-size: 0.8rem;
+            text-decoration: line-through;
+            color: #999;
+            margin-bottom: 2px;
+        }
+
+        .current-price {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--navy-blue);
+            margin-bottom: 10px;
+        }
+
+        .btn-add {
+            background-color: var(--orange);
+            color: var(--white);
+            border: none;
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Bottom Sticky Bar (image_47a83d.png dizayni asosida) */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--white);
+            padding: 15px;
+            box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 101;
+        }
+
+        .cart-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-count {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .cart-total {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--navy-blue);
+        }
+
+        .btn-order {
+            background-color: var(--orange);
+            color: var(--white);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">Xayrullo ota savdo markazi</div>
+
+    <!-- Filter Bo'limlari -->
+    <div class="filter-container">
+        <button class="pill active">Barchasi</button>
+        <button class="pill">Maishiy texnika</button>
+        <button class="pill">Qurilish mollari</button>
+    </div>
+
+    <!-- Mahsulotlar Ro'yxati -->
+    <div class="products-grid" id="products-container">
+        <!-- Mahsulot kartochkasi (Siz kiritgan test ma'lumotlar real vaqtda chiqadi) -->
+    </div>
+
+    <!-- Pastki Buyurtma Berish Bari -->
+    <div class="bottom-bar">
+        <div class="cart-info">
+            <span class="cart-count" id="cart-count-txt">Savat: 0 mahsulot</span>
+            <span class="cart-total" id="cart-total-txt">0 so'm</span>
+        </div>
+        <button class="btn-order" id="submit-order-btn">Buyurtma berish ➔</button>
+    </div>
+
+    <script>
+        // Telegram Web App API init
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Oynani to'liq ekranga ochish
+
+        // Local savat holati
+        let cart = {};
+        
+        // Dynamic yuklash uchun test ma'lumotlar (Buni keyin bot orqali bazadan to'g'ridan-to'g'ri o'qiydigan qilamiz)
+        const sampleProducts = [
+            { id: 1, title: "Televizor Artel", price: 3000000, old_price: 3500000, stock: 5, unit: "dona", discount: "-14%" },
+            { id: 2, title: "Elektr choynak", price: 70000, old_price: null, stock: 15, unit: "dona", discount: null }
+        ];
+
+        function renderProducts() {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+
+            sampleProducts.forEach(prod => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                let discountBadge = prod.old_price ? `<div class="badge-discount">${prod.discount || '-10%'}</div>` : '';
+                let oldPriceHtml = prod.old_price ? `<div class="old-price">${prod.old_price.toLocaleString() + " so'm"}</div>` : '<div class="old-price" style="visibility:hidden;">0</div>';
+
+                card.innerHTML = `
+                    ${discountBadge}
+                    <img class="card-img" src="https://images.uzum.uz/placeholder.png" alt="${prod.title}">
+                    <div class="card-body">
+                        <div class="card-title">${prod.title}</div>
+                        <div class="card-stock">Qoldiq: ${prod.stock} ${prod.unit}</div>
+                        <div class="price-section">
+                            ${oldPriceHtml}
+                            <div class="current-price">${prod.price.toLocaleString()} so'm</div>
+                        </div>
+                        <button class="btn-add" onclick="addToCart(${prod.id}, ${prod.price}, '${prod.title}')">
+                            🛒 Savatga
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function addToCart(id, price, title) {
+            if (cart[id]) {
+                cart[id].qty += 1;
+            } else {
+                cart[id] = { title: title, price: price, qty: 1 };
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            let totalItems = 0;
+            let totalPrice = 0;
+
+            for (let id in cart) {
+                totalItems += cart[id].qty;
+                totalPrice += cart[id].price * cart[id].qty;
+            }
+
+            document.getElementById('cart-count-txt').innerText = `Savat: ${totalItems} mahsulot`;
+            document.getElementById('cart-total-txt').innerText = `${totalPrice.toLocaleString()} so'm`;
+        }
+
+        // Buyurtmani bosganda ma'lumotlarni Telegram bot backendiga uzatish
+        document.getElementById('submit-order-btn').addEventListener('click', () => {
+            if (Object.keys(cart).length === 0) {
+                alert("Savat bo'sh! Iltimos, mahsulot qo'shing.");
+                return;
+            }
+            // Ma'lumotlarni JSON qilib botga qaytaramiz
+            tg.sendData(JSON.stringify(cart));
+            tg.close();
+        });
+
+        // Start render
+        renderProducts();
+    </script>
+</body>
+</html>
