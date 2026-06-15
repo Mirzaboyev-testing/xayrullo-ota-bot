@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xayrullo Ota Savdo Markazi</title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script>var vConsole = new window.VConsole();</script>
     <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -240,7 +244,12 @@ const API_URL = "https://829t3538-8000.inc1.devtunnels.ms/get-products";
 // Real mahsulotlarni bazadan (API orqali) yuklab olish funksiyasi
 async function fetchProducts() {
     try {
-        const response = await fetch(API_URL);
+        const response = await fetch(API_URL, {
+            headers: {
+                "X-Tunnel-Skip-Anti-Phishing-Page": "true",
+                "User-Agent": "Mozilla/5.0"
+            }
+        });
         const products = await response.json();
         renderProducts(products);
     } catch (error) {
