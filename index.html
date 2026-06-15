@@ -229,83 +229,104 @@
 
     <script>
         // Telegram Web App API init
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Oynani to'liq ekranga ochish
+const tg = window.Telegram.WebApp;
+tg.expand(); // Oynani to'liq ekranga ochish
 
-        // Local savat holati
-        let cart = {};
+// Local savat holati
+let cart = {};
+
+// SIZNING LOCAL API MANZILINGIZ (KOMPYUTER SERVERINGIZ)
+const API_URL = "http://127.0.0.1:8000/get-products";
+
+// Real mahsulotlarni bazadan (API orqali) yuklab olish funksiyasi
+async function fetchProducts() {
+    try {
+        const response = await fetch(API_URL);
+        const products = await response.json();
+        renderProducts(products);
+    } catch (error) {
+        console.error("Xatolik: API serverga ulanib bo'lmadi!", error);
+        document.getElementById('products-container').innerHTML = 
+            `<div style="grid-column: span 2; text-align:center; color:red; padding:20px;">
+                ❌ API Server ishlamayapti yoki ulana olmadi!
+             </div>`;
+    }
+}
+
+function renderProducts(products) {
+    const container = document.getElementById('products-container');
+    container.innerHTML = '';
+
+    if (products.length === 0) {
+        container.innerHTML = `<div style="grid-column: span 2; text-align:center; padding:20px;">📦 Hozircha do'konda mahsulot yo'q</div>`;
+        return;
+    }
+
+    products.forEach(prod => {
+        const card = document.createElement('div');
+        card.className = 'card';
         
-        // Dynamic yuklash uchun test ma'lumotlar (Buni keyin bot orqali bazadan to'g'ridan-to'g'ri o'qiydigan qilamiz)
-        const sampleProducts = [
-            { id: 1, title: "Televizor Artel", price: 3000000, old_price: 3500000, stock: 5, unit: "dona", discount: "-14%" },
-            { id: 2, title: "Elektr choynak", price: 70000, old_price: null, stock: 15, unit: "dona", discount: null }
-        ];
-
-        function renderProducts() {
-            const container = document.getElementById('products-container');
-            container.innerHTML = '';
-
-            sampleProducts.forEach(prod => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                
-                let discountBadge = prod.old_price ? `<div class="badge-discount">${prod.discount || '-10%'}</div>` : '';
-                let oldPriceHtml = prod.old_price ? `<div class="old-price">${prod.old_price.toLocaleString() + " so'm"}</div>` : '<div class="old-price" style="visibility:hidden;">0</div>';
-
-                card.innerHTML = `
-                    ${discountBadge}
-                    <img class="card-img" src="https://images.uzum.uz/placeholder.png" alt="${prod.title}">
-                    <div class="card-body">
-                        <div class="card-title">${prod.title}</div>
-                        <div class="card-stock">Qoldiq: ${prod.stock} ${prod.unit}</div>
-                        <div class="price-section">
-                            ${oldPriceHtml}
-                            <div class="current-price">${prod.price.toLocaleString()} so'm</div>
-                        </div>
-                        <button class="btn-add" onclick="addToCart(${prod.id}, ${prod.price}, '${prod.title}')">
-                            🛒 Savatga
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
+        // Chegirma bormi yoki yo'qligini hisoblash
+        let discountBadge = "";
+        let oldPriceHtml = '<div class="old-price" style="visibility:hidden;">0 so\'m</div>';
+        
+        if (prod.old_price && prod.old_price > prod.price) {
+            const pct = Math.round(((prod.old_price - prod.price) / prod.old_price) * 100);
+            discountBadge = `<div class="badge-discount">-${pct}%</div>`;
+            oldPriceHtml = `<div class="old-price">${prod.old_price.toLocaleString()} so'm</div>`;
         }
 
-        function addToCart(id, price, title) {
-            if (cart[id]) {
-                cart[id].qty += 1;
-            } else {
-                cart[id] = { title: title, price: price, qty: 1 };
-            }
-            updateCartUI();
-        }
+        card.innerHTML = `
+            ${discountBadge}
+            <img class="card-img" src="https://images.uzum.uz/placeholder.png" alt="${prod.title}">
+            <div class="card-body">
+                <div class="card-title">${prod.title}</div>
+                <div class="card-stock">Qoldiq: ${prod.stock} ${prod.unit}</div>
+                <div class="price-section">
+                    ${oldPriceHtml}
+                    <div class="current-price">${prod.price.toLocaleString()} so'm</div>
+                </div>
+                <button class="btn-add" onclick="addToCart(${prod.id}, ${prod.price}, '${prod.title}')">
+                    🛒 Savatga
+                </button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
 
-        function updateCartUI() {
-            let totalItems = 0;
-            let totalPrice = 0;
+function addToCart(id, price, title) {
+    if (cart[id]) {
+        cart[id].qty += 1;
+    } else {
+        cart[id] = { title: title, price: price, qty: 1 };
+    }
+    updateCartUI();
+}
 
-            for (let id in cart) {
-                totalItems += cart[id].qty;
-                totalPrice += cart[id].price * cart[id].qty;
-            }
+function updateCartUI() {
+    let totalItems = 0;
+    let totalPrice = 0;
 
-            document.getElementById('cart-count-txt').innerText = `Savat: ${totalItems} mahsulot`;
-            document.getElementById('cart-total-txt').innerText = `${totalPrice.toLocaleString()} so'm`;
-        }
+    for (let id in cart) {
+        totalItems += cart[id].qty;
+        totalPrice += cart[id].price * cart[id].qty;
+    }
 
-        // Buyurtmani bosganda ma'lumotlarni Telegram bot backendiga uzatish
-        document.getElementById('submit-order-btn').addEventListener('click', () => {
-            if (Object.keys(cart).length === 0) {
-                alert("Savat bo'sh! Iltimos, mahsulot qo'shing.");
-                return;
-            }
-            // Ma'lumotlarni JSON qilib botga qaytaramiz
-            tg.sendData(JSON.stringify(cart));
-            tg.close();
-        });
+    document.getElementById('cart-count-txt').innerText = `Savat: ${totalItems} mahsulot`;
+    document.getElementById('cart-total-txt').innerText = `${totalPrice.toLocaleString()} so'm`;
+}
 
-        // Start render
-        renderProducts();
-    </script>
-</body>
-</html>
+// Buyurtmani bosganda ma'lumotlarni Telegram bot backendiga uzatish
+document.getElementById('submit-order-btn').addEventListener('click', () => {
+    if (Object.keys(cart).length === 0) {
+        alert("Savat bo'sh! Iltimos, mahsulot qo'shing.");
+        return;
+    }
+    // Ma'lumotlarni JSON qilib botga qaytaramiz
+    tg.sendData(JSON.stringify(cart));
+    tg.close();
+});
+
+// Sayt ochilganda avtomatik real tovarlarni yuklash
+fetchProducts();
