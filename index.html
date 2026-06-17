@@ -4,20 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xayrullo Ota Savdo Markazi</title>
+    
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-
-    <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
-    <script>var vConsole = new window.VConsole();</script>
-    <!-- Telegram Web App Script -->
+    
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <style>
-        /* SIZ TANLAGAN NAVY BLUE + ORANGE DIZAYN TIZIMI */
         :root {
             --navy-blue: #0B192C;
             --white: #FFFFFF;
             --light-gray: #F4F6F9;
             --orange: #FF6B00;
             --text-color: #333333;
+            --gray-text: #777777;
         }
 
         body {
@@ -28,59 +27,88 @@
             color: var(--text-color);
         }
 
-        /* Header (image_47a8fb.png dizayni asosida) */
+        /* Dizayndagi Header qismi */
         .header {
-            background-color: var(--navy-blue);
-            color: var(--white);
+            background-color: var(--white);
             padding: 15px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e0e0e0;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        /* Filter Pills (image_47a8fb.png dizayni asosida) */
-        .filter-container {
+        .header-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--navy-blue);
+            margin: 0;
+        }
+
+        /* Qidiruv tizimi paneli */
+        .search-container {
+            padding: 10px 15px;
+            background-color: var(--white);
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #FAFAFA;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        /* Kategoriya tugmalari */
+        .categories-container {
             display: flex;
             gap: 10px;
-            padding: 12px;
+            padding: 10px 15px;
             overflow-x: auto;
             background-color: var(--white);
-            position: sticky;
-            top: 53px;
-            z-index: 99;
+            border-bottom: 1px solid #eee;
         }
 
-        .pill {
-            background-color: var(--light-gray);
-            border: none;
+        .category-btn {
             padding: 8px 16px;
             border-radius: 20px;
-            font-size: 0.9rem;
-            white-space: nowrap;
+            border: 1px solid #eeeeee;
+            background-color: #f5f5f5;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
+            white-space: nowrap;
+            color: var(--navy-blue);
+            transition: all 0.2s ease;
         }
 
-        .pill.active {
+        .category-btn.active {
             background-color: var(--navy-blue);
             color: var(--white);
+            border-color: var(--navy-blue);
         }
 
-        /* Product Grid */
+        /* Tovar ro'yxati tarmog'i */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            padding: 12px;
-            padding-bottom: 90px; /* Pastki bar yopib qo'ymasligi uchun */
+            padding: 15px;
+            padding-bottom: 100px;
         }
 
-        /* Product Card */
-        .card {
+        .product-card {
             background-color: var(--white);
             border-radius: 12px;
             overflow: hidden;
@@ -90,92 +118,106 @@
             position: relative;
         }
 
-        .badge-discount {
+        .product-img-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 100px; /* Rasmlar uchun joy */
+            background-color: #eaeaea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-img-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #888;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .discount-badge {
             position: absolute;
             top: 8px;
             right: 8px;
             background-color: var(--orange);
             color: var(--white);
-            padding: 2px 6px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: bold;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 6px;
+            border-radius: 4px;
+            z-index: 10;
         }
 
-        .card-img {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            background-color: #eee;
-        }
-
-        .card-body {
+        .product-info {
             padding: 10px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
         }
 
-        .card-title {
-            font-size: 0.9rem;
-            font-weight: 500;
+        .product-title {
+            font-size: 14px;
+            font-weight: 600;
             margin: 0 0 4px 0;
-            height: 36px;
-            overflow: hidden;
+            color: var(--text-color);
         }
 
-        .card-stock {
-            font-size: 0.75rem;
-            color: #777;
+        .product-stock {
+            font-size: 11px;
+            color: var(--gray-text);
             margin-bottom: 8px;
         }
 
-        .price-section {
+        .price-container {
             margin-top: auto;
+            margin-bottom: 10px;
         }
 
         .old-price {
-            font-size: 0.8rem;
-            text-decoration: line-through;
+            font-size: 11px;
             color: #999;
+            text-decoration: line-through;
             margin-bottom: 2px;
         }
 
         .current-price {
-            font-size: 1rem;
-            font-weight: bold;
-            color: var(--navy-blue);
-            margin-bottom: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-color);
         }
 
-        .btn-add {
+        .add-to-cart-btn {
             background-color: var(--orange);
             color: var(--white);
             border: none;
-            width: 100%;
-            padding: 8px;
+            padding: 10px;
             border-radius: 8px;
-            font-weight: bold;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             gap: 5px;
+            width: 100%;
         }
 
-        /* Bottom Sticky Bar (image_47a83d.png dizayni asosida) */
-        .bottom-bar {
+        /* Savat va Buyurtma berish paneli */
+        .cart-footer {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             background-color: var(--white);
             padding: 15px;
-            box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 -3px 10px rgba(0,0,0,0.08);
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            z-index: 101;
+            justify-content: space-between;
+            z-index: 200;
         }
 
         .cart-info {
@@ -184,157 +226,212 @@
         }
 
         .cart-count {
-            font-size: 0.8rem;
-            color: #666;
+            font-size: 12px;
+            color: var(--gray-text);
         }
 
         .cart-total {
-            font-size: 1.1rem;
-            font-weight: bold;
+            font-size: 18px;
+            font-weight: 700;
             color: var(--navy-blue);
         }
 
-        .btn-order {
+        .order-btn {
             background-color: var(--orange);
             color: var(--white);
             border: none;
             padding: 12px 24px;
             border-radius: 10px;
-            font-weight: bold;
-            font-size: 1rem;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
+            transition: background 0.2s;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">Xayrullo ota savdo markazi</div>
-
-    <!-- Filter Bo'limlari -->
-    <div class="filter-container">
-        <button class="pill active">Barchasi</button>
-        <button class="pill">Maishiy texnika</button>
-        <button class="pill">Qurilish mollari</button>
+    <div class="header">
+        <h1 class="header-title">Xayrullo ota savdo markazi</h1>
     </div>
 
-    <!-- Mahsulotlar Ro'yxati -->
-    <div class="products-grid" id="products-container">
-        <!-- Mahsulot kartochkasi (Siz kiritgan test ma'lumotlar real vaqtda chiqadi) -->
-    </div>
-
-    <!-- Pastki Buyurtma Berish Bari -->
-    <div class="bottom-bar">
-        <div class="cart-info">
-            <span class="cart-count" id="cart-count-txt">Savat: 0 mahsulot</span>
-            <span class="cart-total" id="cart-total-txt">0 so'm</span>
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Mahsulotlarni qidirish..." oninput="filterProducts()">
         </div>
-        <button class="btn-order" id="submit-order-btn">Buyurtma berish ➔</button>
+    </div>
+
+    <div class="categories-container">
+        <button class="category-btn active" onclick="selectCategory('all', this)">Barchasi</button>
+        <button class="category-btn" onclick="selectCategory('Maishiy texnika', this)">Maishiy texnika</button>
+        <button class="category-btn" onclick="selectCategory('Qurilish mollari', this)">Qurilish mollari</button>
+    </div>
+
+    <div class="products-grid" id="products-container">
+        </div>
+
+    <div class="cart-footer">
+        <div class="cart-info">
+            <span class="cart-count" id="cart-count">Savat: 0 mahsulot</span>
+            <span class="cart-total" id="cart-total">0 so'm</span>
+        </div>
+        <button class="order-btn" onclick="sendOrder()">Buyurtma berish ➔</button>
     </div>
 
     <script>
-        // Telegram Web App API init
-const tg = window.Telegram.WebApp;
-tg.expand(); // Oynani to'liq ekranga ochish
+        // SIZNING DEV TUNNELS HAVOLANGIZ
+        const API_URL = "https://829t3538-8000.inc1.devtunnels.ms/get-products";
+        
+        let allProducts = [];
+        let filteredProducts = [];
+        let currentCategory = 'all';
+        let cart = {};
 
-// Local savat holati
-let cart = {};
-
-// SIZNING LOCAL API MANZILINGIZ (KOMPYUTER SERVERINGIZ)
-const API_URL = "https://829t3538-8000.inc1.devtunnels.ms/get-products";
-// Real mahsulotlarni bazadan (API orqali) yuklab olish funksiyasi
-async function fetchProducts() {
-    try {
-        const response = await fetch(API_URL, {
-            headers: {
-                "X-Tunnel-Skip-Anti-Phishing-Page": "true",
-                "User-Agent": "Mozilla/5.0"
+        // API dan tovarlarni tortib olish
+        async function fetchProducts() {
+            try {
+                const response = await fetch(API_URL, {
+                    headers: {
+                        "X-Tunnel-Skip-Anti-Phishing-Page": "true",
+                        "User-Agent": "Mozilla/5.0"
+                    }
+                });
+                allProducts = await response.json();
+                applyFilters();
+            } catch (error) {
+                document.getElementById('products-container').innerHTML = 
+                    `<div style="grid-column: span 2; text-align:center; color:red; padding:20px; font-size: 14px;">
+                        ❌ Ma'lumotlar yuklanmadi. Port ochiqligini tekshiring!
+                     </div>`;
             }
-        });
-        const products = await response.json();
-        renderProducts(products);
-    } catch (error) {
-        console.error("Xatolik: API serverga ulanib bo'lmadi!", error);
-        document.getElementById('products-container').innerHTML = 
-            `<div style="grid-column: span 2; text-align:center; color:red; padding:20px;">
-                ❌ API Server ishlamayapti yoki ulana olmadi!
-             </div>`;
-    }
-}
-
-function renderProducts(products) {
-    const container = document.getElementById('products-container');
-    container.innerHTML = '';
-
-    if (products.length === 0) {
-        container.innerHTML = `<div style="grid-column: span 2; text-align:center; padding:20px;">📦 Hozircha do'konda mahsulot yo'q</div>`;
-        return;
-    }
-
-    products.forEach(prod => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        // Chegirma bormi yoki yo'qligini hisoblash
-        let discountBadge = "";
-        let oldPriceHtml = '<div class="old-price" style="visibility:hidden;">0 so\'m</div>';
-        
-        if (prod.old_price && prod.old_price > prod.price) {
-            const pct = Math.round(((prod.old_price - prod.price) / prod.old_price) * 100);
-            discountBadge = `<div class="badge-discount">-${pct}%</div>`;
-            oldPriceHtml = `<div class="old-price">${prod.old_price.toLocaleString()} so'm</div>`;
         }
 
-        card.innerHTML = `
-            ${discountBadge}
-            <img class="card-img" src="https://images.uzum.uz/placeholder.png" alt="${prod.title}">
-            <div class="card-body">
-                <div class="card-title">${prod.title}</div>
-                <div class="card-stock">Qoldiq: ${prod.stock} ${prod.unit}</div>
-                <div class="price-section">
-                    ${oldPriceHtml}
-                    <div class="current-price">${prod.price.toLocaleString()} so'm</div>
-                </div>
-                <button class="btn-add" onclick="addToCart(${prod.id}, ${prod.price}, '${prod.title}')">
-                    🛒 Savatga
-                </button>
-            </div>
-        `;
-        container.appendChild(card);
-    });
-}
+        // Kategoriya tugmasi bosilganda
+        function selectCategory(category, element) {
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            currentCategory = category;
+            applyFilters();
+        }
 
-function addToCart(id, price, title) {
-    if (cart[id]) {
-        cart[id].qty += 1;
-    } else {
-        cart[id] = { title: title, price: price, qty: 1 };
-    }
-    updateCartUI();
-}
+        // Qidiruv va Kategoriyani bir vaqtda qo'llash
+        function filterProducts() {
+            applyFilters();
+        }
 
-function updateCartUI() {
-    let totalItems = 0;
-    let totalPrice = 0;
+        function applyFilters() {
+            const searchQuery = document.getElementById('search-input').value.toLowerCase();
+            
+            filteredProducts = allProducts.filter(product => {
+                // Bu yerda kategoriya tekshiruvi (baza strukturangizga qarab moslashadi)
+                // Agar bazada kategoriya yo'q bo'lsa, nomiga qarab taxmin qiladi
+                const matchesCategory = currentCategory === 'all' || 
+                    (product.category && product.category === currentCategory) ||
+                    (currentCategory === 'Maishiy texnika' && (product.title.toLowerCase().includes('televizor') || product.title.toLowerCase().includes('konditsioner') || product.title.toLowerCase().includes('choynak')));
+                
+                const matchesSearch = product.title.toLowerCase().includes(searchQuery);
+                
+                return matchesCategory && matchesSearch;
+            });
 
-    for (let id in cart) {
-        totalItems += cart[id].qty;
-        totalPrice += cart[id].price * cart[id].qty;
-    }
+            renderProducts(filteredProducts);
+        }
 
-    document.getElementById('cart-count-txt').innerText = `Savat: ${totalItems} mahsulot`;
-    document.getElementById('cart-total-txt').innerText = `${totalPrice.toLocaleString()} so'm`;
-}
+        // Tovarlarni ekranga chiqarish (Dizaynga 100% mos)
+        function renderProducts(products) {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
 
-// Buyurtmani bosganda ma'lumotlarni Telegram bot backendiga uzatish
-document.getElementById('submit-order-btn').addEventListener('click', () => {
-    if (Object.keys(cart).length === 0) {
-        alert("Savat bo'sh! Iltimos, mahsulot qo'shing.");
-        return;
-    }
-    // Ma'lumotlarni JSON qilib botga qaytaramiz
-    tg.sendData(JSON.stringify(cart));
-    tg.close();
-});
+            if (products.length === 0) {
+                container.innerHTML = `<div style="grid-column: span 2; text-align:center; color:#888; padding:20px;">Mahsulot topilmadi</div>`;
+                return;
+            }
 
-// Sayt ochilganda avtomatik real tovarlarni yuklash
-fetchProducts();
+            products.forEach(product => {
+                // Chegirma hisoblash
+                let discountBadge = '';
+                if (product.old_price && product.old_price > product.price) {
+                    const pct = Math.round(((product.old_price - product.price) / product.old_price) * 100);
+                    discountBadge = `<div class="discount-badge">-${pct}%</div>`;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    ${discountBadge}
+                    <div class="product-img-wrapper">
+                        <div class="product-img-placeholder">${product.title}</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${product.title}</h3>
+                        <span class="product-stock">Qoldiq: ${product.stock} ${product.unit || 'dona'}</span>
+                        <div class="price-container">
+                            ${product.old_price ? `<div class="old-price">${product.old_price.toLocaleString()} so'm</div>` : ''}
+                            <div class="current-price">${product.price.toLocaleString()} so'm</div>
+                        </div>
+                        <button class="add-to-cart-btn" onclick="addToCart(${product.id})">
+                            🛒 Savatga
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Savat funksiyalari
+        function addToCart(id) {
+            const product = allProducts.find(p => p.id === id);
+            if (!product) return;
+
+            if (cart[id]) {
+                if (cart[id].quantity < product.stock) {
+                    cart[id].quantity += 1;
+                } else {
+                    alert("Omborda yetarli mahsulot yo'q!");
+                    return;
+                }
+            } else {
+                cart[id] = { title: product.title, price: product.price, quantity: 1 };
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            let totalItems = 0;
+            let totalPrice = 0;
+
+            Object.values(cart).forEach(item => {
+                totalItems += item.quantity;
+                totalPrice += item.price * item.quantity;
+            });
+
+            document.getElementById('cart-count').innerText = `Savat: ${totalItems} mahsulot`;
+            document.getElementById('cart-total').innerText = `${totalPrice.toLocaleString()} so'm`;
+        }
+
+        // Telegramga buyurtmani yuborish
+        function sendOrder() {
+            if (Object.keys(cart).length === 0) {
+                alert("Savat bo'sh! Tovar qo'shing.");
+                return;
+            }
+
+            const orderData = {
+                items: cart,
+                total_price: Object.values(cart).reduce((sum, item) => sum + (item.price * item.quantity), 0)
+            };
+
+            // Telegram botga ma'lumot uzatish
+            Telegram.WebApp.sendData(JSON.stringify(orderData));
+            Telegram.WebApp.close();
+        }
+
+        // Ishga tushirish
+        window.onload = function() {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+            fetchProducts();
+        };
+    </script>
+</body>
+</html>
