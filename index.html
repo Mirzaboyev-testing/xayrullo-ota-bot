@@ -94,20 +94,20 @@
         .stat-value { font-size: 16px; font-weight: 700; }
         .stat-label { font-size: 11px; opacity: 0.6; }
 
-        /* DO'KON BILAN BOG'LANISH KARTASI (YANGI BILAN) */
+        /* DO'KON MA'LUMOTLARI */
         .contact-card { background-color: var(--white); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-top: 15px; }
         .contact-title { font-size: 15px; font-weight: 700; color: var(--navy-blue); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; }
         .contact-row { font-size: 13px; margin-bottom: 10px; color: #444; }
         .call-now-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background-color: #25D366; color: var(--white); text-decoration: none; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; margin-top: 5px; }
 
-        /* FLOATING FOOTER PANEL (ASOSIY SAHIFA UCHUN) */
+        /* FLOATING FOOTER PANEL */
         .cart-footer { position: fixed; bottom: 78px; left: 12px; right: 12px; background-color: var(--navy-blue); padding: 12px 16px; border-radius: 16px; box-shadow: 0 8px 25px rgba(11,25,44,0.25); display: none; align-items: center; justify-content: space-between; z-index: 150; color: var(--white); animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .cart-footer-left { display: flex; align-items: center; gap: 10px; }
         .close-cart-btn { background: rgba(255,255,255,0.15); border: none; color: var(--white); font-size: 11px; width: 22px; height: 22px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; }
         .order-btn { background-color: var(--orange); color: var(--white); border: none; padding: 12px 22px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(255,107,0,0.3); }
 
-        /* STITCH NAVBAR */
+        /* BOTTOM NAVBAR */
         .bottom-navbar { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--white); height: 68px; border-top: 1px solid var(--border-color); display: grid; grid-template-columns: repeat(4, 1fr); z-index: 200; box-shadow: 0 -4px 10px rgba(0,0,0,0.02); }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--gray-text); cursor: pointer; gap: 5px; position: relative; }
         .nav-item.active { color: var(--orange); }
@@ -123,14 +123,13 @@
 </head>
 <body>
 
-    <!-- 1. RO'YXATDAN O'TISH -->
     <div id="auth-page" class="auth-container" style="display: none;">
         <div class="auth-logo">🛡️ XAYRULLO OTA</div>
         <div class="form-group" style="width: 100%;">
             <label style="font-weight:700; font-size:13px; color:var(--navy-blue); margin-bottom:8px; display:block;" id="lbl-lang">Alifboni tanlang / Алифбони танланг</label>
-            <div class="lang-selector">
-                <button class="lang-btn active" onclick="setRegLang('uz')">Lotincha</button>
-                <button class="lang-btn" onclick="setRegLang('kr')">Кириллча</button>
+            <div style="display:flex; gap:10px;">
+                <button class="submit-btn" style="background:var(--navy-blue);" onclick="setRegLang('uz')">Lotincha</button>
+                <button class="submit-btn" style="background:#4A5568;" onclick="setRegLang('kr')">Кириллча</button>
             </div>
         </div>
         <div class="form-group" style="width: 100%; margin-top:15px;">
@@ -144,14 +143,12 @@
         <button class="submit-btn" onclick="submitRegistration()" id="btn-reg-text" style="margin-top:20px;">Ro'yxatdan o'tish</button>
     </div>
 
-    <!-- 2. MAIN APP -->
     <div id="main-app" style="display: none;">
         <div class="header">
             <h1 class="header-title" id="app-header-title">Xayrullo ota savdo markazi</h1>
             <button class="lang-btn-header" onclick="toggleGlobalLanguage()" id="btn-toggle-lang">LOTIN</button>
         </div>
 
-        <!-- TAB-1: ASOSIY -->
         <div id="page-asosiy" class="page active">
             <div class="search-container"><div class="search-box"><input type="text" id="search-input" placeholder="Mahsulotlarni qidirish..." oninput="filterProducts()"></div></div>
             <div class="categories-scroll">
@@ -164,7 +161,6 @@
             </div>
         </div>
 
-        <!-- TAB-2: KATALOG -->
         <div id="page-katalog" class="page">
             <div class="katalog-banner">
                 <h3 id="kat-banner-title">Raqamli Katalog</h3>
@@ -182,7 +178,6 @@
             </div>
         </div>
 
-        <!-- TAB-3: SAVAT -->
         <div id="page-savat" class="page">
             <div id="cart-items-wrapper"></div>
             <div id="cart-actions-container" style="display:none;" class="savat-confirm-box">
@@ -191,7 +186,6 @@
             </div>
         </div>
 
-        <!-- TAB-4: PROFIL -->
         <div id="page-profil" class="page">
             <div class="profile-card">
                 <div class="profile-badge" id="prof-status">Doimiy mijoz</div>
@@ -203,7 +197,6 @@
                 </div>
             </div>
 
-            <!-- DO'KON BILAN BOG'LANISH (SIZ XO'XHLAGANDAY DOYMIY MANZIL VA SOTUVCHI TELEFONI) -->
             <div class="contact-card">
                 <h3 class="contact-title">🏢 <span id="lbl-contact-title">Do'kon ma'lumotlari</span></h3>
                 <div class="contact-row">📍 <strong id="lbl-address-tag">Manzil:</strong> <span id="lbl-shop-address">Xayrullo Ota savdo markazi, Asosiy bino</span></div>
@@ -212,20 +205,17 @@
             </div>
         </div>
 
-        <!-- Floating Cart Panel (Asosiy sahifada yordam beradi) -->
         <div class="cart-footer" id="floating-cart">
             <div class="cart-footer-left">
-                <button class="close-cart-btn" onclick="clearCartCompletely()" title="Savatni tozalash">✕</button>
+                <button class="close-cart-btn" onclick="hideFloatingCartPanel()" title="Panelni yopish">✕</button>
                 <div>
                     <span id="cart-count">Savat: 0 ta mahsulot</span><br>
                     <span id="cart-total" style="font-size: 15px; font-weight: 700;">0 so'm</span>
                 </div>
             </div>
-            <!-- QA Talabi: Bosilganda botdan chiqmaydi, to'g'ridan-to'g'ri SAVAT tabiga o'tadi -->
             <button class="order-btn" onclick="navigateToCartTab()" id="btn-order">Savatga o'tish ➔</button>
         </div>
 
-        <!-- BOTTOM NAVBAR -->
         <div class="bottom-navbar">
             <div class="nav-item active" onclick="switchTab('asosiy', this)"><span class="nav-icon">🏠</span><span id="nav-lbl-home">Asosiy</span></div>
             <div class="nav-item" onclick="switchTab('katalog', this)"><span class="nav-icon">📱</span><span id="nav-lbl-cat">Katalog</span></div>
@@ -241,8 +231,8 @@
         let currentLang = 'uz';
         let telegramUser = null;
         let selectedCategoryFilter = 'all';
+        let isCartPanelManuallyClosed = false; // Panel holatini kuzatish uchun flag
 
-        // DICTIONARY (QA va Profil Buglari 100% to'g'rilangan Kirill lug'ati bilan)
         const dictionary = {
             uz: {
                 lblName: "Ism va Familiya", lblPhone: "Telefon raqami", btnReg: "Ro'yxatdan o'tish",
@@ -258,7 +248,7 @@
                 lblName: "Исм ва Фамилия", lblPhone: "Телефон рақами", btnReg: "Рўйхатдан ўтиш",
                 searchPlaceholder: "Маҳсулотларни қидириш...", catAll: "Барчаси", orderBtn: "Саватга ўтиш ➔",
                 homeTab: "Асосий", catTab: "Каталог", cartTab: "Сават", profTab: "Профил", cartLabel: "Сават:", emptyCart: "Сават бўш 🛒",
-                loading: "Юкланмоқда...", status: "Доимий мижоз", bannerT: "Рақамли Каталог", bannerD: "Энг сифатли молларни осон топинг",
+                loading: "Юкланмоqda...", status: "Доимий мижоз", bannerT: "Рақамли Каталог", bannerD: "Энг сифатли молларни осон топинг",
                 texnika: "Маиший техника", mollari: "Қурилиш моллари", addCart: "+ Саватга", itemsText: "та маҳсулот",
                 contactT: "Дўкон маълумотлари", addrTag: "Манзил:", phoneTag: "Сотувчи:", callBtn: "📞 Сотувчига қўнғироқ қилиш",
                 totalPay: "Умумий сумма:", submitReq: "Дўконга сўров юбориш ➔",
@@ -290,8 +280,6 @@
 
         function setRegLang(lang) {
             currentLang = lang;
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
             applyLanguageUI();
         }
 
@@ -319,8 +307,6 @@
             document.getElementById('kat-banner-desc').innerText = d.bannerD;
             document.getElementById('kat-lbl-1').innerText = d.texnika;
             document.getElementById('kat-lbl-2').innerText = d.mollari;
-            
-            // Do'kon interfeysi tarjimalari
             document.getElementById('lbl-contact-title').innerText = d.contactT;
             document.getElementById('lbl-address-tag').innerText = d.addrTag;
             document.getElementById('lbl-phone-tag').innerText = d.phoneTag;
@@ -347,6 +333,7 @@
             document.getElementById(`page-${tabId}`).classList.add('active');
             element.classList.add('active');
             if (tabId === 'savat') renderCartPage();
+            updateCartUI(); // Tab almashganda panel holatlarini yangilash
         }
 
         function selectCategoryTab(category) {
@@ -355,7 +342,6 @@
             else selectCategory('Qurilish mollari', document.getElementById('cat-mollari'));
         }
 
-        // Floating Footer panelidan Savat oynasiga yo'naltirish (Botdan chiqib ketmaydi!)
         function navigateToCartTab() {
             switchTab('savat', document.querySelectorAll('.nav-item')[2]);
         }
@@ -366,7 +352,7 @@
                 allProducts = await response.json();
                 renderProducts(allProducts);
             } catch (error) {
-                document.getElementById('products-container').innerHTML = `<div style="grid-column:span 2;text-align:center;color:red;padding:40px 10px;font-weight:600;">Port xatosi! Uvicorn yoki Portni tekshiring.</div>`;
+                document.getElementById('products-container').innerHTML = `<div style="grid-column:span 2;text-align:center;color:red;padding:40px 10px;font-weight:600;">Server aloqa xatosi!</div>`;
             }
         }
 
@@ -395,7 +381,6 @@
 
                 const imgUrl = p.image_url ? p.image_url : "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400";
                 
-                // Smart Button mantiqi: Savatda borligiga qarab joyida +/- chiqadi
                 let actionBtnHtml = `<button class="add-btn" onclick="addToCart(${p.id})">${dictionary[currentLang].addCart}</button>`;
                 if (cart[p.id] && cart[p.id].quantity > 0) {
                     actionBtnHtml = `
@@ -406,7 +391,6 @@
                         </div>`;
                 }
 
-                // Qo'shimcha Ideal: Do'kon turi uchun o'lchov birligi qo'shildi (p.unit_type donami, metrmi)
                 const unitStr = p.unit_type ? p.unit_type : "dona";
 
                 const card = document.createElement('div');
@@ -429,6 +413,7 @@
             if (!product) return;
             cart[id] = { id: product.id, title: product.title, price: product.price, quantity: 1 };
             localStorage.setItem('tg_shop_cart', JSON.stringify(cart));
+            isCartPanelManuallyClosed = false; // Yangi mahsulot qo'shilganda pastki panel qayta ko'rinishi uchun
             updateCartUI();
             renderProducts(allProducts); 
         }
@@ -443,9 +428,16 @@
             if (document.getElementById('page-savat').classList.contains('active')) renderCartPage();
         }
 
+        // TUZATILDI: ✕ Bosilganda mahsulotlar o'chmaydi, faqat panel yashirinadi!
+        function hideFloatingCartPanel() {
+            isCartPanelManuallyClosed = true;
+            document.getElementById('floating-cart').style.display = 'none';
+        }
+
         function clearCartCompletely() {
             cart = {};
             localStorage.removeItem('tg_shop_cart');
+            isCartPanelManuallyClosed = false;
             updateCartUI();
             renderProducts(allProducts);
             if (document.getElementById('page-savat').classList.contains('active')) renderCartPage();
@@ -462,12 +454,21 @@
             const floatingCart = document.getElementById('floating-cart');
             const badge = document.getElementById('nav-cart-badge');
             
+            // Faqat Savat sahifasining o'zida turganda pastki suzuvchi panel avtomatik yashirinadi
+            const isAtCartTab = document.getElementById('page-savat').classList.contains('active');
+
             if (totalItems > 0) {
-                floatingCart.style.display = 'flex';
                 badge.style.display = 'block';
                 badge.innerText = totalItems;
                 document.getElementById('cart-actions-container').style.display = 'block';
                 document.getElementById('txt-total-pay').innerText = `${d.totalPay} ${totalPrice.toLocaleString()} so'm`;
+                
+                // Agar foydalanuvchi panelni ✕ qilib yopmagan bo'lsa va Savat tabida bo'lmasa, panel chiqadi
+                if (!isCartPanelManuallyClosed && !isAtCartTab) {
+                    floatingCart.style.display = 'flex';
+                } else {
+                    floatingCart.style.display = 'none';
+                }
             } else {
                 floatingCart.style.display = 'none';
                 badge.style.display = 'none';
@@ -528,22 +529,18 @@
             renderProducts(allProducts);
         }
 
-        // TEPADAN TAYYOR POP-UP CHIQARIB, ADMIN/SOTUVCHIGA SO'ROV YUBORISH (BOT YOPILIB KETMAYDI!)
         function sendOrderRequestToAdmin() {
             if (Object.keys(cart).length === 0) return;
             
             if (window.Telegram && window.Telegram.WebApp) {
                 const webapp = window.Telegram.WebApp;
-                
-                // Muvaffaqiyatli so'rov uchun ichki Telegram Pop-up ssenariysi (QA Engineer talabi)
                 webapp.showPopup({
                     title: dictionary[currentLang].popupTitle,
                     message: dictionary[currentLang].popupMsg,
                     buttons: [{type: 'ok'}]
                 }, function(buttonId) {
-                    // Xaridor OK bosganidan so'ng orqa fonga ma'lumot jo'natamiz, lekin botni yopmaymiz!
                     webapp.sendData(JSON.stringify({ order_request: cart }));
-                    clearCartCompletely(); // Savat tozalanadi va foydalanuvchi ilovada qoladi
+                    clearCartCompletely();
                     switchTab('asosiy', document.querySelectorAll('.nav-item')[0]);
                 });
             } else {
