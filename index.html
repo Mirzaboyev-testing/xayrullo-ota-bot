@@ -123,6 +123,7 @@
 </head>
 <body>
 
+    <!-- 1. RO'YXATDAN O'TISH -->
     <div id="auth-page" class="auth-container" style="display: none;">
         <div class="auth-logo">🛡️ XAYRULLO OTA</div>
         <div class="form-group" style="width: 100%;">
@@ -143,12 +144,14 @@
         <button class="submit-btn" onclick="submitRegistration()" id="btn-reg-text" style="margin-top:20px;">Ro'yxatdan o'tish</button>
     </div>
 
+    <!-- 2. MAIN APP -->
     <div id="main-app" style="display: none;">
         <div class="header">
             <h1 class="header-title" id="app-header-title">Xayrullo ota savdo markazi</h1>
             <button class="lang-btn-header" onclick="toggleGlobalLanguage()" id="btn-toggle-lang">LOTIN</button>
         </div>
 
+        <!-- TAB-1: ASOSIY -->
         <div id="page-asosiy" class="page active">
             <div class="search-container"><div class="search-box"><input type="text" id="search-input" placeholder="Mahsulotlarni qidirish..." oninput="filterProducts()"></div></div>
             <div class="categories-scroll">
@@ -161,6 +164,7 @@
             </div>
         </div>
 
+        <!-- TAB-2: KATALOG -->
         <div id="page-katalog" class="page">
             <div class="katalog-banner">
                 <h3 id="kat-banner-title">Raqamli Katalog</h3>
@@ -178,6 +182,7 @@
             </div>
         </div>
 
+        <!-- TAB-3: SAVAT -->
         <div id="page-savat" class="page">
             <div id="cart-items-wrapper"></div>
             <div id="cart-actions-container" style="display:none;" class="savat-confirm-box">
@@ -186,6 +191,7 @@
             </div>
         </div>
 
+        <!-- TAB-4: PROFIL -->
         <div id="page-profil" class="page">
             <div class="profile-card">
                 <div class="profile-badge" id="prof-status">Doimiy mijoz</div>
@@ -205,6 +211,7 @@
             </div>
         </div>
 
+        <!-- FLOATING CART PANEL -->
         <div class="cart-footer" id="floating-cart">
             <div class="cart-footer-left">
                 <button class="close-cart-btn" onclick="hideFloatingCartPanel()" title="Panelni yopish">✕</button>
@@ -216,6 +223,7 @@
             <button class="order-btn" onclick="navigateToCartTab()" id="btn-order">Savatga o'tish ➔</button>
         </div>
 
+        <!-- BOTTOM NAVBAR -->
         <div class="bottom-navbar">
             <div class="nav-item active" onclick="switchTab('asosiy', this)"><span class="nav-icon">🏠</span><span id="nav-lbl-home">Asosiy</span></div>
             <div class="nav-item" onclick="switchTab('katalog', this)"><span class="nav-icon">📱</span><span id="nav-lbl-cat">Katalog</span></div>
@@ -231,7 +239,7 @@
         let currentLang = 'uz';
         let telegramUser = null;
         let selectedCategoryFilter = 'all';
-        let isCartPanelManuallyClosed = false; // Panel holatini kuzatish uchun flag
+        let isCartPanelManuallyClosed = false; 
 
         const dictionary = {
             uz: {
@@ -248,11 +256,11 @@
                 lblName: "Исм ва Фамилия", lblPhone: "Телефон рақами", btnReg: "Рўйхатдан ўтиш",
                 searchPlaceholder: "Маҳсулотларни қидириш...", catAll: "Барчаси", orderBtn: "Саватга ўтиш ➔",
                 homeTab: "Асосий", catTab: "Каталог", cartTab: "Сават", profTab: "Профил", cartLabel: "Сават:", emptyCart: "Сават бўш 🛒",
-                loading: "Юкланмоqda...", status: "Доимий мижоз", bannerT: "Рақамли Каталог", bannerD: "Энг сифатли молларни осон топинг",
+                loading: "Юкланмоқда...", status: "Доимий мижоз", bannerT: "Рақамли Каталог", bannerD: "Энг сифатли молларни осон топинг",
                 texnika: "Маиший техника", mollari: "Қурилиш моллари", addCart: "+ Саватга", itemsText: "та маҳсулот",
                 contactT: "Дўкон маълумотлари", addrTag: "Манзил:", phoneTag: "Сотувчи:", callBtn: "📞 Сотувчига қўнғироқ қилиш",
                 totalPay: "Умумий сумма:", submitReq: "Дўконга сўров юбориш ➔",
-                popupTitle: "Буюртма қабул қилинди", popupMsg: "Буюртмангиз муваффақиятли қабул қилинди! Сиз билан 24 соат ичида боғланамиз."
+                popupTitle: "Буюртма қабул қилинди", popupMsg: "Буюртмангиз muvaffaqiyatli қабул қилинди! Сиз билан 24 соат ичида боғланамиз."
             }
         };
 
@@ -333,7 +341,7 @@
             document.getElementById(`page-${tabId}`).classList.add('active');
             element.classList.add('active');
             if (tabId === 'savat') renderCartPage();
-            updateCartUI(); // Tab almashganda panel holatlarini yangilash
+            updateCartUI(); 
         }
 
         function selectCategoryTab(category) {
@@ -413,7 +421,7 @@
             if (!product) return;
             cart[id] = { id: product.id, title: product.title, price: product.price, quantity: 1 };
             localStorage.setItem('tg_shop_cart', JSON.stringify(cart));
-            isCartPanelManuallyClosed = false; // Yangi mahsulot qo'shilganda pastki panel qayta ko'rinishi uchun
+            isCartPanelManuallyClosed = false; 
             updateCartUI();
             renderProducts(allProducts); 
         }
@@ -428,7 +436,7 @@
             if (document.getElementById('page-savat').classList.contains('active')) renderCartPage();
         }
 
-        // TUZATILDI: ✕ Bosilganda mahsulotlar o'chmaydi, faqat panel yashirinadi!
+        // MAQSADLI TUZATISH: ✕ bosilganda mahsulotlar o'chmaydi, faqat panel yashirinadi va asosiy sahifadagi tugmalar o'zgarmaydi!
         function hideFloatingCartPanel() {
             isCartPanelManuallyClosed = true;
             document.getElementById('floating-cart').style.display = 'none';
@@ -454,7 +462,6 @@
             const floatingCart = document.getElementById('floating-cart');
             const badge = document.getElementById('nav-cart-badge');
             
-            // Faqat Savat sahifasining o'zida turganda pastki suzuvchi panel avtomatik yashirinadi
             const isAtCartTab = document.getElementById('page-savat').classList.contains('active');
 
             if (totalItems > 0) {
@@ -463,7 +470,6 @@
                 document.getElementById('cart-actions-container').style.display = 'block';
                 document.getElementById('txt-total-pay').innerText = `${d.totalPay} ${totalPrice.toLocaleString()} so'm`;
                 
-                // Agar foydalanuvchi panelni ✕ qilib yopmagan bo'lsa va Savat tabida bo'lmasa, panel chiqadi
                 if (!isCartPanelManuallyClosed && !isAtCartTab) {
                     floatingCart.style.display = 'flex';
                 } else {
