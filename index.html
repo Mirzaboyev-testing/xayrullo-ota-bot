@@ -123,7 +123,6 @@
 </head>
 <body>
 
-    <!-- 1. RO'YXATDAN O'TISH -->
     <div id="auth-page" class="auth-container" style="display: none;">
         <div class="auth-logo">🛡️ XAYRULLO OTA</div>
         <div class="form-group" style="width: 100%;">
@@ -144,45 +143,30 @@
         <button class="submit-btn" onclick="submitRegistration()" id="btn-reg-text" style="margin-top:20px;">Ro'yxatdan o'tish</button>
     </div>
 
-    <!-- 2. MAIN APP -->
     <div id="main-app" style="display: none;">
         <div class="header">
             <h1 class="header-title" id="app-header-title">Xayrullo ota savdo markazi</h1>
             <button class="lang-btn-header" onclick="toggleGlobalLanguage()" id="btn-toggle-lang">LOTIN</button>
         </div>
 
-        <!-- TAB-1: ASOSIY -->
         <div id="page-asosiy" class="page active">
             <div class="search-container"><div class="search-box"><input type="text" id="search-input" placeholder="Mahsulotlarni qidirish..." oninput="filterProducts()"></div></div>
-            <div class="categories-scroll">
+            <div class="categories-scroll" id="dynamic-categories-scroll">
                 <button class="cat-chip active" id="cat-all" onclick="selectCategory('all', this)">Barchasi</button>
-                <button class="cat-chip" id="cat-texnika" onclick="selectCategory('Maishiy texnika', this)">Maishiy texnika</button>
-                <button class="cat-chip" id="cat-mollari" onclick="selectCategory('Qurilish mollari', this)">Qurilish mollari</button>
             </div>
             <div class="products-grid" id="products-container">
                 <div class="loading-box"><div class="spinner"></div><span id="txt-loading">Yuklanmoqda...</span></div>
             </div>
         </div>
 
-        <!-- TAB-2: KATALOG -->
         <div id="page-katalog" class="page">
             <div class="katalog-banner">
                 <h3 id="kat-banner-title">Raqamli Katalog</h3>
                 <p id="kat-banner-desc">Eng sifatli mollarni toifalangan holatda oson toping.</p>
             </div>
-            <div class="katalog-grid" style="margin-top:20px;">
-                <div class="katalog-row" onclick="selectCategoryTab('Maishiy texnika')">
-                    <div class="katalog-row-left"><span class="katalog-icon">📺</span><span id="kat-lbl-1">Maishiy texnika</span></div>
-                    <span style="color:var(--gray-text)">➔</span>
-                </div>
-                <div class="katalog-row" onclick="selectCategoryTab('Qurilish mollari')">
-                    <div class="katalog-row-left"><span class="katalog-icon">🧱</span><span id="kat-lbl-2">Qurilish mollari</span></div>
-                    <span style="color:var(--gray-text)">➔</span>
-                </div>
-            </div>
+            <div class="katalog-grid" style="margin-top:20px;" id="dynamic-katalog-list"></div>
         </div>
 
-        <!-- TAB-3: SAVAT -->
         <div id="page-savat" class="page">
             <div id="cart-items-wrapper"></div>
             <div id="cart-actions-container" style="display:none;" class="savat-confirm-box">
@@ -191,7 +175,6 @@
             </div>
         </div>
 
-        <!-- TAB-4: PROFIL -->
         <div id="page-profil" class="page">
             <div class="profile-card">
                 <div class="profile-badge" id="prof-status">Doimiy mijoz</div>
@@ -211,7 +194,6 @@
             </div>
         </div>
 
-        <!-- FLOATING CART PANEL -->
         <div class="cart-footer" id="floating-cart">
             <div class="cart-footer-left">
                 <button class="close-cart-btn" onclick="hideFloatingCartPanel()" title="Panelni yopish">✕</button>
@@ -223,7 +205,6 @@
             <button class="order-btn" onclick="navigateToCartTab()" id="btn-order">Savatga o'tish ➔</button>
         </div>
 
-        <!-- BOTTOM NAVBAR -->
         <div class="bottom-navbar">
             <div class="nav-item active" onclick="switchTab('asosiy', this)"><span class="nav-icon">🏠</span><span id="nav-lbl-home">Asosiy</span></div>
             <div class="nav-item" onclick="switchTab('katalog', this)"><span class="nav-icon">📱</span><span id="nav-lbl-cat">Katalog</span></div>
@@ -235,6 +216,7 @@
     <script>
         const API_BASE = "https://829t3538-8000.inc1.devtunnels.ms";
         let allProducts = [];
+        let allCategories = [];
         let cart = JSON.parse(localStorage.getItem('tg_shop_cart')) || {}; 
         let currentLang = 'uz';
         let telegramUser = null;
@@ -247,7 +229,7 @@
                 searchPlaceholder: "Mahsulotlarni qidirish...", catAll: "Barchasi", orderBtn: "Savatga o'tish ➔",
                 homeTab: "Asosiy", catTab: "Katalog", cartTab: "Savat", profTab: "Profil", cartLabel: "Savat:", emptyCart: "Savat bo'sh 🛒",
                 loading: "Yuklanmoqda...", status: "Doimiy mijoz", bannerT: "Raqamli Katalog", bannerD: "Eng sifatli mollarni oson toping",
-                texnika: "Maishiy texnika", mollari: "Qurilish mollari", addCart: "+ Savatga", itemsText: "ta mahsulot",
+                addCart: "+ Savatga", itemsText: "ta mahsulot",
                 contactT: "Do'kon ma'lumotlari", addrTag: "Manzil:", phoneTag: "Sotuvchi:", callBtn: "📞 Sotuvchiga qo'ng'iroq qilish",
                 totalPay: "Umumiy summa:", submitReq: "Do'konga so'rov yuborish ➔",
                 popupTitle: "Buyurtma qabul qilindi", popupMsg: "Buyurtmangiz muvaffaqiyatli qabul qilindi! Siz bilan 24 soat ichida bog'lanamiz."
@@ -257,7 +239,7 @@
                 searchPlaceholder: "Маҳсулотларни қидириш...", catAll: "Барчаси", orderBtn: "Саватга ўтиш ➔",
                 homeTab: "Асосий", catTab: "Каталог", cartTab: "Сават", profTab: "Профил", cartLabel: "Сават:", emptyCart: "Сават бўш 🛒",
                 loading: "Юкланмоқда...", status: "Доимий мижоз", bannerT: "Рақамли Каталог", bannerD: "Энг сифатли молларни осон топинг",
-                texnika: "Маиший техника", mollari: "Қурилиш моллари", addCart: "+ Саватга", itemsText: "та маҳсулот",
+                addCart: "+ Саватга", itemsText: "ta маҳсулот",
                 contactT: "Дўкон маълумотлари", addrTag: "Манзил:", phoneTag: "Сотувчи:", callBtn: "📞 Сотувчига қўнғироқ қилиш",
                 totalPay: "Умумий сумма:", submitReq: "Дўконга сўров юбориш ➔",
                 popupTitle: "Буюртма қабул қилинди", popupMsg: "Буюртмангиз muvaffaqiyatli қабул қилинди! Сиз билан 24 соат ичида боғланамиз."
@@ -281,6 +263,7 @@
         function showMainApp() {
             document.getElementById('auth-page').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
+            fetchCategories();
             fetchProducts();
             updateCartUI();
             updateProfileUI();
@@ -304,8 +287,6 @@
             document.getElementById('btn-reg-text').innerText = d.btnReg;
             document.getElementById('search-input').placeholder = d.searchPlaceholder;
             document.getElementById('cat-all').innerText = d.catAll;
-            document.getElementById('cat-texnika').innerText = d.texnika;
-            document.getElementById('cat-mollari').innerText = d.mollari;
             document.getElementById('btn-order').innerText = d.orderBtn;
             document.getElementById('nav-lbl-home').innerText = d.homeTab;
             document.getElementById('nav-lbl-cat').innerText = d.catTab;
@@ -313,8 +294,6 @@
             document.getElementById('nav-lbl-prof').innerText = d.profTab;
             document.getElementById('kat-banner-title').innerText = d.bannerT;
             document.getElementById('kat-banner-desc').innerText = d.bannerD;
-            document.getElementById('kat-lbl-1').innerText = d.texnika;
-            document.getElementById('kat-lbl-2').innerText = d.mollari;
             document.getElementById('lbl-contact-title').innerText = d.contactT;
             document.getElementById('lbl-address-tag').innerText = d.addrTag;
             document.getElementById('lbl-phone-tag').innerText = d.phoneTag;
@@ -323,6 +302,7 @@
 
             updateCartUI();
             updateProfileUI();
+            renderCategoriesChips();
             renderProducts(allProducts); 
             if (document.getElementById('page-savat').classList.contains('active')) renderCartPage();
         }
@@ -344,14 +324,57 @@
             updateCartUI(); 
         }
 
-        function selectCategoryTab(category) {
-            switchTab('asosiy', document.querySelectorAll('.nav-item')[0]);
-            if(category === 'Maishiy texnika') selectCategory('Maishiy texnika', document.getElementById('cat-texnika'));
-            else selectCategory('Qurilish mollari', document.getElementById('cat-mollari'));
-        }
-
         function navigateToCartTab() {
             switchTab('savat', document.querySelectorAll('.nav-item')[2]);
+        }
+
+        // TUGADI: Dinamik kategoriyalarni serverdan olish drayveri
+        async function fetchCategories() {
+            try {
+                const response = await fetch(`${API_BASE}/get-categories`, { headers: { "X-Tunnel-Skip-Anti-Phishing-Page": "true" } });
+                allCategories = await response.json();
+                renderCategoriesChips();
+                renderKatalogTab();
+            } catch (error) {
+                console.error("Kategoriya yuklashda xatolik:", error);
+            }
+        }
+
+        function renderCategoriesChips() {
+            const container = document.getElementById('dynamic-categories-scroll');
+            // Faqat barchasi tugmasini qoldirib qolganini tozalaymiz
+            container.innerHTML = `<button class="cat-chip ${selectedCategoryFilter === 'all' ? 'active' : ''}" id="cat-all" onclick="selectCategory('all', this)">${dictionary[currentLang].catAll}</button>`;
+            
+            allCategories.forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = `cat-chip ${selectedCategoryFilter === c.name ? 'active' : ''}`;
+                btn.innerText = c.name;
+                btn.onclick = function() { selectCategory(c.name, this); };
+                container.appendChild(btn);
+            });
+        }
+
+        function renderKatalogTab() {
+            const container = document.getElementById('dynamic-katalog-list');
+            container.innerHTML = '';
+            
+            allCategories.forEach(c => {
+                const row = document.createElement('div');
+                row.className = 'katalog-row';
+                row.onclick = function() {
+                    switchTab('asosiy', document.querySelectorAll('.nav-item')[0]);
+                    selectedCategoryFilter = c.name;
+                    fetchProducts();
+                };
+                row.innerHTML = `
+                    <div class="katalog-row-left">
+                        <span class="katalog-icon">📁</span>
+                        <span>${c.name} (${c.product_count || 0})</span>
+                    </div>
+                    <span style="color:var(--gray-text)">➔</span>
+                `;
+                container.appendChild(row);
+            });
         }
 
         async function fetchProducts() {
@@ -364,13 +387,14 @@
             }
         }
 
+        // TUZATILDI: Yangi bazadagi `unit_type` va `old_price` arxitekturasini to'g'ri render qilish
         function renderProducts(products) {
             const container = document.getElementById('products-container');
             container.innerHTML = '';
             
             let filtered = products;
             if (selectedCategoryFilter !== 'all') {
-                filtered = products.filter(p => p.title.toLowerCase().includes(selectedCategoryFilter.toLowerCase().split(' ')[0]));
+                filtered = products.filter(p => p.category === selectedCategoryFilter);
             }
 
             const q = document.getElementById('search-input').value.toLowerCase();
@@ -399,6 +423,7 @@
                         </div>`;
                 }
 
+                // Xatolik bartaraf etildi: p.unit_type donami, qopmi to'g'ri o'qiladi
                 const unitStr = p.unit_type ? p.unit_type : "dona";
 
                 const card = document.createElement('div');
@@ -436,7 +461,6 @@
             if (document.getElementById('page-savat').classList.contains('active')) renderCartPage();
         }
 
-        // MAQSADLI TUZATISH: ✕ bosilganda mahsulotlar o'chmaydi, faqat panel yashirinadi va asosiy sahifadagi tugmalar o'zgarmaydi!
         function hideFloatingCartPanel() {
             isCartPanelManuallyClosed = true;
             document.getElementById('floating-cart').style.display = 'none';
