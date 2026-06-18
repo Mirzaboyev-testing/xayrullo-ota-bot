@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Xayrullo Ota</title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    
+    <style>
+        :root {
+            --navy-blue: #0B192C;
+            --white: #FFFFFF;
+            --light-gray: #F4F6F9;
+            --orange: #FF6B00;
+            --text-color: #222222;
+            --gray-text: #888888;
+            --border-color: #EFEFEF;
+            --success-green: #25D366;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--light-gray);
+            margin: 0; padding: 0; color: var(--text-color);
+        }
+
+        /* LOGIN SCREEN */
+        .login-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; padding: 20px; box-sizing: border-box; background-color: var(--navy-blue);
+        }
+        .login-card {
+            background-color: var(--white); padding: 40px 30px; border-radius: 16px;
+            width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center;
+        }
+        .login-card h2 { margin: 0 0 10px 0; color: var(--navy-blue); font-size: 24px; }
+        .login-card p { margin: 0 0 25px 0; color: var(--gray-text); font-size: 14px; }
+
+        .input-field {
+            width: 100%; padding: 14px; border: 1px solid var(--border-color); border-radius: 10px;
+            font-size: 14px; box-sizing: border-box; margin-bottom: 15px; outline: none; background-color: #FAFAFA;
+        }
+        .login-btn {
+            width: 100%; background: linear-gradient(135deg, #0B192C 0%, #1E3E62 100%);
+            color: var(--white); border: none; padding: 14px; border-radius: 10px;
+            font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
+        }
+        .login-btn:hover { opacity: 0.9; }
+
+        /* MAIN DASHBOARD */
+        .dashboard-layout { display: none; min-height: 100vh; }
+        .dashboard-layout.active { display: flex; flex-direction: column; }
+
+        .navbar {
+            background-color: var(--navy-blue); color: var(--white); padding: 15px 25px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .navbar-brand { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .logout-btn { background: rgba(255,255,255,0.15); border: none; color: var(--white); padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+
+        .main-content { padding: 30px 25px; max-width: 1200px; width: 100%; margin: 0 auto; box-sizing: border-box; }
+        
+        .grid-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+        @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
+
+        /* CARD STYLES */
+        .admin-card { background-color: var(--white); border-radius: 14px; border: 1px solid var(--border-color); padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.01); }
+        .card-title { margin: 0 0 20px 0; font-size: 18px; font-weight: 700; color: var(--navy-blue); border-bottom: 2px solid var(--light-gray); padding-bottom: 10px; }
+
+        label { font-size: 13px; font-weight: 600; color: var(--navy-blue); display: block; margin-bottom: 6px; }
+        select.input-field { appearance: none; }
+
+        /* TABLE STYLES */
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+        th { background-color: var(--light-gray); color: var(--navy-blue); padding: 12px; font-weight: 700; border-bottom: 2px solid var(--border-color); }
+        td { padding: 12px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        
+        .p-img-mini { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; background-color: #eee; }
+        .btn-action { padding: 6px 12px; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; margin-right: 5px; }
+        .btn-delete { background-color: #FFE5E5; color: #D32F2F; }
+        .btn-edit { background-color: #E5F6FD; color: #0288D1; }
+
+        .save-btn { background-color: var(--orange); color: var(--white); border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(255,107,0,0.2); }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen" class="login-container">
+        <div class="login-card">
+            <h2>Xayrullo Ota</h2>
+            <p>Boshqaruv tizimiga kirish</p>
+            <input type="text" id="adm-login" class="input-field" placeholder="Login">
+            <input type="password" id="adm-password" class="input-field" placeholder="Maxfiy parol">
+            <button class="login-btn" onclick="handleAdminLogin()">Tizimga kirish ➔</button>
+        </div>
+    </div>
+
+    <div id="dashboard-screen" class="dashboard-layout">
+        <div class="navbar">
+            <div class="navbar-brand">🛡️ Xayrullo Ota — Admin Panel</div>
+            <button class="logout-btn" onclick="handleAdminLogout()">Chiqish ✕</button>
+        </div>
+
+        <div class="main-content">
+            <div class="grid-layout">
+                
+                <div class="admin-card">
+                    <h3 class="card-title">Yangi mahsulot qo'shish</h3>
+                    
+                    <label>Mahsulot nomi</label>
+                    <input type="text" id="prod-title" class="input-field" placeholder="Masalan: Shivaki Konditsioner">
+
+                    <label>Toifasi (Katalog)</label>
+                    <select id="prod-category" class="input-field">
+                        <option value="Maishiy texnika">Maishiy texnika</option>
+                        <option value="Qurilish mollari">Qurilish mollari</option>
+                    </select>
+
+                    <label>Asosiy narxi (so'mda)</label>
+                    <input type="number" id="prod-price" class="input-field" placeholder="Masalan: 4200000">
+
+                    <label>Eski narxi (Skidka bo'lsa - ixtiyoriy)</label>
+                    <input type="number" id="prod-old-price" class="input-field" placeholder="Yo'q bo'lsa bo'sh qoldiring">
+
+                    <label>Sotuvdagi qoldiq miqdori</label>
+                    <input type="number" id="prod-stock" class="input-field" placeholder="Masalan: 12">
+
+                    <label>O'lchov birligi</label>
+                    <select id="prod-unit" class="input-field">
+                        <option value="dona">dona</option>
+                        <option value="qop">qop</option>
+                        <option value="kg">kg</option>
+                        <option value="metr">metr</option>
+                    </select>
+
+                    <label>Rasm internet linki (URL)</label>
+                    <input type="text" id="prod-image" class="input-field" placeholder="https://picsum.photos/200">
+
+                    <button class="save-btn" onclick="saveProductToServer()">Mahsulotni saqlash ✨</button>
+                </div>
+
+                <div class="admin-card">
+                    <h3 class="card-title">Do'kondagi barcha mahsulotlar</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rasm</th>
+                                    <th>Nomi</th>
+                                    <th>Toifasi</th>
+                                    <th>Narxi</th>
+                                    <th>Qoldiq</th>
+                                    <th>Amallar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-table-body">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: var(--gray-text);">Yuklanmoqda...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "https://829t3538-8000.inc1.devtunnels.ms";
+        let editProductId = null; // Tahrirlash rejimini kuzatish uchun variable
+
+        // Xavfsizlik: Parolni tekshirish (Loyiha egasi uchun maxfiy login/parol)
+        function handleAdminLogin() {
+            const log = document.getElementById('adm-login').value.trim();
+            const pas = document.getElementById('adm-password').value.trim();
+
+            // Soddalashtirilgan va xavfsiz login sharti
+            if (log === "admin" && pas === "ota777") {
+                sessionStorage.setItem("admin_logged", "true");
+                showDashboard();
+            } else {
+                alert("Login yoki maxfiy parol noto'g'ri!");
+            }
+        }
+
+        function checkSession() {
+            if (sessionStorage.getItem("admin_logged") === "true") {
+                showDashboard();
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('dashboard-screen').classList.add('active');
+            fetchAdminProducts();
+        }
+
+        function handleAdminLogout() {
+            sessionStorage.removeItem("admin_logged");
+            location.reload();
+        }
+
+        // Serverdan barcha mahsulotlarni olib kelib jadvalga joylash
+        async function fetchAdminProducts() {
+            try {
+                const response = await fetch(`${API_BASE}/get-products`, { 
+                    headers: { "X-Tunnel-Skip-Anti-Phishing-Page": "true" } 
+                });
+                const products = await response.json();
+                renderAdminTable(products);
+            } catch (error) {
+                console.error("Xatolik:", error);
+            }
+        }
+
+        function renderAdminTable(products) {
+            const tbody = document.getElementById('products-table-body');
+            tbody.innerHTML = '';
+
+            if (products.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Mahsulotlar mavjud emas. Birinchi mahsulotni qo'shing!</td></tr>`;
+                return;
+            }
+
+            products.forEach(p => {
+                const imgUrl = p.image_url ? p.image_url : "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=100";
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><img src="${imgUrl}" class="p-img-mini" onerror="this.src='https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=100'"></td>
+                    <td style="font-weight:600;">${p.title}</td>
+                    <td><span style="background:#eee; padding:4px 8px; border-radius:6px; font-size:12px;">${p.category || 'Mollari'}</span></td>
+                    <td><strong style="color:var(--navy-blue);">${p.price.toLocaleString()} so'm</strong></td>
+                    <td>${p.stock} ${p.unit_type || 'dona'}</td>
+                    <td>
+                        <button class="btn-action btn-edit" onclick="startEditProduct(${JSON.stringify(p).replace(/"/g, '&quot;')})">✏️</button>
+                        <button class="btn-action btn-delete" onclick="deleteProductFromServer(${p.id})">❌</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Yangi mahsulot yuborish (Yoki tahrirlash)
+        async function saveProductToServer() {
+            const title = document.getElementById('prod-title').value.trim();
+            const category = document.getElementById('prod-category').value;
+            const price = parseFloat(document.getElementById('prod-price').value);
+            const oldPriceInput = document.getElementById('prod-old-price').value;
+            const old_price = oldPriceInput ? parseFloat(oldPriceInput) : null;
+            const stock = parseInt(document.getElementById('prod-stock').value);
+            const unit_type = document.getElementById('prod-unit').value;
+            const image_url = document.getElementById('prod-image').value.trim();
+
+            if (!title || isNaN(price) || isNaN(stock)) {
+                alert("Iltimos barcha kerakli maydonlarni to'ldiring!");
+                return;
+            }
+
+            const payload = { title, category, price, old_price, stock, unit_type, image_url };
+
+            try {
+                let url = `${API_BASE}/add-product`;
+                // Agar tahrirlash bo'lsa, payload ichiga ID qo'shamiz va boshqa endpointga yuborishimiz ham mumkin
+                if (editProductId) {
+                    payload.id = editProductId;
+                    url = `${API_BASE}/update-product`; // Backendda update endpointi bo'lishi kerak
+                }
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert(editProductId ? "Mahsulot yangilandi!" : "Yangi mahsulot muvaffaqiyatli qo'shildi!");
+                    resetForm();
+                    fetchAdminProducts();
+                } else {
+                    alert("Saqlashda xatolik yuz berdi.");
+                }
+            } catch (error) {
+                alert("Server bilan aloqa uzildi!");
+            }
+        }
+
+        // Mahsulotni o'chirish drayveri
+        async function deleteProductFromServer(id) {
+            if (!confirm("Ushbu mahsulotni bazadan butunlay o'chirmoqchimisiz?")) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/delete-product/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert("Mahsulot o'chirildi!");
+                    fetchAdminProducts();
+                } else {
+                    alert("O'chirishda xatolik bo'ldi.");
+                }
+            } catch (error) {
+                alert("Server xatosi!");
+            }
+        }
+
+        function startEditProduct(product) {
+            editProductId = product.id;
+            document.getElementById('prod-title').value = product.title;
+            document.getElementById('prod-category').value = product.category || "Maishiy texnika";
+            document.getElementById('prod-price').value = product.price;
+            document.getElementById('prod-old-price').value = product.old_price || "";
+            document.getElementById('prod-stock').value = product.stock;
+            document.getElementById('prod-unit').value = product.unit_type || "dona";
+            document.getElementById('prod-image').value = product.image_url || "";
+            
+            document.querySelector('.save-btn').innerText = "O'zgarishlarni saqlash 🔄";
+        }
+
+        function resetForm() {
+            editProductId = null;
+            document.getElementById('prod-title').value = "";
+            document.getElementById('prod-price').value = "";
+            document.getElementById('prod-old-price').value = "";
+            document.getElementById('prod-stock').value = "";
+            document.getElementById('prod-image').value = "";
+            document.querySelector('.save-btn').innerText = "Mahsulotni saqlash ✨";
+        }
+
+        window.onload = checkSession;
+    </script>
+</body>
+</html>
