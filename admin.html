@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xayrullo Ota - Professional Admin Panel</title>
+    <title>Xayrullo Ota - Pro ERP Admin Panel</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -17,6 +17,7 @@
             --border: #EFEFEF;
             --green: #25D366;
             --red: #D32F2F;
+            --yellow: #FFC107;
         }
 
         body {
@@ -34,83 +35,68 @@
             background-color: var(--white); padding: 40px 30px; border-radius: 16px;
             width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        .login-card h2 { margin: 0 0 10px 0; color: var(--navy-dark); }
-        .login-card p { margin: 0 0 25px 0; color: var(--text-muted); font-size: 14px; }
 
         /* MAIN LAYOUT */
         .admin-container { display: none; width: 100%; min-height: 100vh; }
         .admin-container.active { display: flex; }
 
-        /* SIDEBAR NAVBARY */
-        .sidebar {
-            width: 260px; background-color: var(--navy-dark); color: var(--white);
-            display: flex; flex-direction: column; shrink: 0;
-        }
-        .sidebar-header {
-            padding: 25px 20px; font-size: 18px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1);
-            display: flex; align-items: center; gap: 10px;
-        }
+        /* SIDEBAR */
+        .sidebar { width: 260px; background-color: var(--navy-dark); color: var(--white); display: flex; flex-direction: column; shrink: 0; }
+        .sidebar-header { padding: 25px 20px; font-size: 18px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .sidebar-menu { list-style: none; padding: 20px 0; margin: 0; flex-grow: 1; }
         .menu-item {
             padding: 14px 20px; display: flex; align-items: center; gap: 12px;
             color: #BAC4D0; text-decoration: none; font-size: 15px; font-weight: 500; cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s; border-left: 4px solid transparent;
         }
-        .menu-item:hover, .menu-item.active {
-            background-color: var(--navy-light); color: var(--white); border-left: 4px solid var(--orange);
-        }
-        .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .menu-item:hover, .menu-item.active { background-color: var(--navy-light); color: var(--white); border-left-color: var(--orange); }
 
-        /* MAIN CONTENT AREA */
+        /* CONTENT */
         .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; background-color: var(--bg-gray); }
-        .top-bar {
-            height: 70px; background-color: var(--white); border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
-        }
+        .top-bar { height: 70px; background-color: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; }
         .content-body { padding: 30px; flex-grow: 1; overflow-y: auto; box-sizing: border-box; }
 
-        /* TABS MANAGEMENT */
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* STATS CARDS */
+        /* CARDS & GRIDS */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: var(--white); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
-        .stat-card h4 { margin: 0 0 10px 0; color: var(--text-muted); font-size: 14px; font-weight: 600; }
-        .stat-card .value { font-size: 24px; font-weight: 700; color: var(--navy-dark); }
+        .stat-card h4 { margin: 0 0 10px 0; color: var(--text-muted); font-size: 14px; }
+        .stat-card .value { font-size: 22px; font-weight: 700; color: var(--navy-dark); }
 
-        /* CHARTS CONTAINER */
-        .chart-box { background: var(--white); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 30px; max-width: 600px;}
+        .dashboard-main-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 30px; }
+        @media (max-width: 1024px) { .dashboard-main-grid { grid-template-columns: 1fr; } }
 
-        /* FORMS & TABLES */
         .ui-card { background: var(--white); padding: 25px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 25px; }
         .ui-title { margin: 0 0 20px 0; font-size: 18px; color: var(--navy-dark); font-weight: 700; }
-        
+
+        /* TABLES & FORMS */
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--navy-dark); }
-        .form-control {
-            width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px;
-            font-size: 14px; box-sizing: border-box; outline: none; background: #FAFAFA;
-        }
-        .btn-ui {
-            background-color: var(--orange); color: var(--white); border: none; padding: 12px 24px;
-            border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
-        }
-        .btn-ui:hover { opacity: 0.9; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; box-sizing: border-box; outline: none; background: #FAFAFA; }
+        
+        .btn-ui { background-color: var(--orange); color: var(--white); border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; }
+        .btn-filter { background: #E4E7EB; border: none; padding: 8px 16px; border-radius: 6px; margin-right: 10px; cursor: pointer; font-weight: 600; font-size: 13px; }
+        .btn-filter.active { background: var(--navy-dark); color: var(--white); }
 
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
-        th { background: var(--bg-gray); padding: 12px; font-weight: 700; color: var(--navy-dark); border-bottom: 2px solid var(--border); }
+        th { background: var(--bg-gray); padding: 12px; font-weight: 700; border-bottom: 2px solid var(--border); }
         td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        
         .badge { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
-        .badge-success { background: #E8F5E9; color: var(--green); }
+        .badge-danger { background: #FFEBEE; color: var(--red); }
+        
+        .status-select { padding: 6px; border-radius: 6px; border: 1px solid var(--border); font-size: 13px; font-weight: 600; outline: none; }
+        .prod-img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; }
     </style>
 </head>
 <body>
 
     <div id="login-screen" class="login-container">
         <div class="login-card">
-            <h2>Xayrullo Ota</h2>
-            <p>Tizimga kirish uchun ma'lumotlarni kiriting</p>
+            <h2 style="margin:0 0 10px 0; color:var(--navy-dark);">Xayrullo Ota</h2>
+            <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">Tizimga kirish</p>
             <input type="text" id="adm-login" class="form-control" placeholder="Login" style="margin-bottom:15px;">
             <input type="password" id="adm-password" class="form-control" placeholder="Parol" style="margin-bottom:20px;">
             <button class="btn-ui" style="width:100%;" onclick="handleAdminLogin()">Kirish ➔</button>
@@ -120,113 +106,175 @@
     <div id="admin-layout" class="admin-container">
         
         <div class="sidebar">
-            <div class="sidebar-header">🛡️ Admin Panel</div>
+            <div class="sidebar-header">🛡️ Pro ERP Panel</div>
             <ul class="sidebar-menu">
-                <li class="menu-item active" onclick="switchTab('dashboard', this)">📊 Dashboard</li>
-                <li class="menu-item" onclick="switchTab('products', this)">📦 Mahsulotlar</li>
-                <li class="menu-item" onclick="switchTab('categories', this)">📁 Kategoriyalar</li>
-                <li class="menu-item" onclick="switchTab('orders', this)">🛒 Buyurtmalar</li>
-                <li class="menu-item" onclick="switchTab('sending', this)">📣 Xabar Yuborish</li>
-                <li class="menu-item" onclick="switchTab('profile', this)">👤 Profil va Sozlamalar</li>
+                <li id="menu-dashboard" class="menu-item active" onclick="switchTab('dashboard')">📊 Dashboard</li>
+                <li id="menu-products" class="menu-item" onclick="switchTab('products')">📦 Mahsulotlar</li>
+                <li id="menu-categories" class="menu-item" onclick="switchTab('categories')">📁 Kategoriyalar</li>
+                <li id="menu-orders" class="menu-item" onclick="switchTab('orders')">🛒 Buyurtmalar</li>
+                <li id="menu-pos" class="menu-item" onclick="switchTab('pos')">💰 Oflayn Savdo (Kassa)</li>
+                <li id="menu-sending" class="menu-item" onclick="switchTab('sending')">📣 Xabar Yuborish</li>
+                <li id="menu-profile" class="menu-item" onclick="switchTab('profile')">👤 Sozlamalar</li>
             </ul>
-            <div class="sidebar-footer">
-                <button class="btn-ui" style="width:100%; background:#333;" onclick="handleAdminLogout()">Chiqish</button>
-            </div>
         </div>
 
         <div class="main-wrapper">
             <div class="top-bar">
-                <div style="font-weight:600; font-size:16px;">Xush kelibsiz, Admin</div>
-                <div style="color:var(--text-muted); font-size:14px;" id="live-time">Do'kon holati: Faol ✅</div>
+                <div style="font-weight:600; font-size:16px;">Boshqaruv Tizimi</div>
+                <div id="shop-status-indicator" style="color:var(--green); font-weight:600;">Do'kon holati: Ochiq ✅</div>
             </div>
 
             <div class="content-body">
                 
                 <div id="tab-dashboard" class="tab-content active">
                     <div class="stats-grid">
-                        <div class="stat-card"><h4>Jami Mahsulotlar</h4><div class="value" id="stat-total-products">124 ta</div></div>
-                        <div class="stat-card"><h4>Umumiy Kapital (Likvidlik)</h4><div class="value" id="stat-total-capital">45,200,000 so'm</div></div>
-                        <div class="stat-card"><h4>Yangi Buyurtmalar</h4><div class="value" id="stat-new-orders" style="color:var(--orange);">5 ta</div></div>
+                        <div class="stat-card"><h4>Jami Mahsulotlar</h4><div class="value">142 ta</div></div>
+                        <div class="stat-card"><h4>Eng Ko'p Sotilgan</h4><div class="value" style="color:var(--green); font-size:18px;">Shivaki 12 (42 ta)</div></div>
+                        <div class="stat-card"><h4>Eng Kam Sotilgan</h4><div class="value" style="color:var(--red); font-size:18px;">Sement M-500 (2 ta)</div></div>
+                        <div class="stat-card"><h4>Yangi Buyurtmalar</h4><div class="value" style="color:var(--orange);">4 ta</div></div>
                     </div>
-                    <div class="chart-box">
-                        <h3 class="ui-title">Kategoriyalar bo'yicha tovar ulushi</h3>
-                        <canvas id="categoryChart"></canvas>
+
+                    <div class="dashboard-main-grid">
+                        <div class="ui-card" style="height: 380px;">
+                            <h3 class="ui-title">Kategoriyalar ulushi grafikda</h3>
+                            <div style="position: relative; height:280px; width:100%;">
+                                <canvas id="categoryChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="ui-card">
+                            <h3 class="ui-title" style="color:var(--red);">⚠️ Tugayotgan mahsulotlar</h3>
+                            <table style="font-size:13px;">
+                                <thead><tr><th>Nomi</th><th>Qoldiq</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Gipsokarton Knauf</td><td><span class="badge badge-danger">3 dona</span></td></tr>
+                                    <tr><td>Shurup 25mm</td><td><span class="badge badge-danger">15 qop</span></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <div id="tab-products" class="tab-content">
-                    <div class="ui-card">
-                        <h3 class="ui-title">Yangi mahsulot qo'shish</h3>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-                            <div class="form-group"><label>Mahsulot nomi</label><input type="text" class="form-control" placeholder="Nomi"></div>
-                            <div class="form-group">
-                                <label>Kategoriya</label>
-                                <select class="form-control" id="product-cat-select">
-                                    <option>Maishiy texnika</option>
-                                    <option>Qurilish mollari</option>
-                                </select>
-                            </div>
-                            <div class="form-group"><label>Narxi (so'm)</label><input type="number" class="form-control"></div>
-                            <div class="form-group"><label>Ombor qoldig'i (Stock)</label><input type="number" class="form-control"></div>
+                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 25px; align-items: start;">
+                        <div class="ui-card">
+                            <h3 class="ui-title">Yangi mahsulot</h3>
+                            <div class="form-group"><label>Nomi</label><input type="text" class="form-control"></div>
+                            <div class="form-group"><label>Kategoriya</label><select class="form-control"><option>Maishiy texnika</option><option>Qurilish mollari</option></select></div>
+                            <div class="form-group"><label>Asosiy Narx (so'm)</label><input type="number" class="form-control"></div>
+                            <div class="form-group"><label>Chegirmali Narx (Aksiya - ixtiyoriy)</label><input type="number" class="form-control" placeholder="Skidka bo'lsa yozing"></div>
+                            <div class="form-group"><label>Ombor qoldig'i</label><input type="number" class="form-control"></div>
+                            <div class="form-group"><label>Mahsulot haqida ma'lumot (Userlar uchun)</label><textarea class="form-control" rows="3"></textarea></div>
+                            <div class="form-group"><label>Mahsulot rasmi</label><input type="file" class="form-control" accept="image/*"></div>
+                            <button class="btn-ui" style="width: 100%;">Saqlash ✨</button>
                         </div>
-                        <button class="btn-ui" style="margin-top:10px;">Saqlash ✨</button>
+                        <div class="ui-card">
+                            <h3 class="ui-title">Barcha mahsulotlar</h3>
+                            <table>
+                                <thead><tr><th>Rasm</th><th>Nomi</th><th>Narxi</th><th>Qoldiq</th><th>Amallar</th></tr></thead>
+                                <tbody>
+                                    <tr><td><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=100" class="prod-img"></td><td>Shivaki Konditsioner 12</td><td>4,200,000</td><td>8 ta</td><td>✏️ ❌</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <div id="tab-categories" class="tab-content">
-                    <div class="ui-card">
-                        <h3 class="ui-title">Yangi Kategoriya qo'shish</h3>
-                        <div class="form-group">
-                            <label>Kategoriya nomi</label>
-                            <input type="text" id="new-cat-name" class="form-control" placeholder="Masalan: Uy jihozlari">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; align-items: start;">
+                        <div class="ui-card">
+                            <h3 class="ui-title">Yangi Kategoriya</h3>
+                            <div class="form-group"><label>Kategoriya nomi</label><input type="text" class="form-control" placeholder="Masalan: Uy jihozlari"></div>
+                            <button class="btn-ui">Qo'shish 📁</button>
                         </div>
-                        <button class="btn-ui" onclick="alert('Kategoriya qo\'shildi (Tez orada bazaga ulanadi)')">Qo'shish 📁</button>
+                        <div class="ui-card">
+                            <h3 class="ui-title">Mavjud Kategoriyalar</h3>
+                            <table>
+                                <thead><tr><th>Kategoriya nomi</th><th>Mahsulotlar soni</th><th>Amal</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Maishiy texnika</td><td>24 ta mahsulot</td><td>❌</td></tr>
+                                    <tr><td>Qurilish mollari</td><td>98 ta mahsulot</td><td>❌</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
                 <div id="tab-orders" class="tab-content">
                     <div class="ui-card">
-                        <h3 class="ui-title">Kelib tushgan buyurtmalar ro'yxati</h3>
+                        <div style="margin-bottom: 20px;">
+                            <button class="btn-filter active" onclick="filterOrders('yangi')">Yangi buyurtmalar</button>
+                            <button class="btn-filter" onclick="filterOrders('koorildi')">Ko'rib chiqilganlar</button>
+                            <button class="btn-filter" onclick="filterOrders('arxiv')">Arxiv (Tugatilgan)</button>
+                        </div>
                         <table>
-                            <thead>
-                                <tr>
-                                    <th>Mijoz</th>
-                                    <th>Telefon</th>
-                                    <th>Sotib olgan tovarlari</th>
-                                    <th>Umumiy Summa</th>
-                                    <th>Holati</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>Mijoz</th><th>Telefon</th><th>Tovarlar</th><th>Summa</th><th>Holatni o'zgartirish</th></tr></thead>
                             <tbody>
                                 <tr>
                                     <td>Asilbek Olimov</td>
                                     <td>+998 91 234 56 78</td>
-                                    <td>Shivaki Konditsioner (1 ta), Sement (5 qop)</td>
-                                    <td><strong>4,425,000 so'm</strong></td>
-                                    <td><span class="badge badge-success">Yangi</span></td>
+                                    <td>Shivaki 12 (1 ta)</td>
+                                    <td>4,200,000 so'm</td>
+                                    <td>
+                                        <select class="status-select">
+                                            <option value="kutilmoqda">Kutilmoqda ⏳</option>
+                                            <option value="yetkazilmoqda">Yetkazilmoqda 🚚</option>
+                                            <option value="yakunlandi">Yakunlandi ✅</option>
+                                        </select>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div id="tab-sending" class="tab-content">
-                    <div class="ui-card">
-                        <h3 class="ui-title">Bot a'zolariga reklama/xabar yuborish</h3>
-                        <div class="form-group">
-                            <label>Xabar matni</label>
-                            <textarea class="form-control" rows="5" placeholder="Bot ichidagi barcha foydalanuvchilarga boradigan matnni yozing..."></textarea>
+                <div id="tab-pos" class="tab-content">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; align-items: start;">
+                        <div class="ui-card">
+                            <h3 class="ui-title">Kelib olib ketilgan mahsulotni kiritish</h3>
+                            <div class="form-group"><label>Mahsulotni tanlang</label><select class="form-control"><option>Shivaki Konditsioner 12</option><option>Sement M-400</option></select></div>
+                            <div class="form-group"><label>Sotilgan miqdori</label><input type="number" class="form-control" value="1"></div>
+                            <div class="form-group"><label>Sotilgan haqiqiy narxi (so'mda)</label><input type="number" class="form-control" placeholder="Kelishilgan narx"></div>
+                            <button class="btn-ui" style="width: 100%;">Savdoni yakunlash va chek chiqarish 🛒</button>
                         </div>
-                        <button class="btn-ui" style="background-color:var(--navy-light);">Xabarni hammaga yuborish 📣</button>
+                        <div class="ui-card">
+                            <h3 class="ui-title">📊 Oylik umumiy hisobot va statistika</h3>
+                            <div class="stats-grid" style="grid-template-columns: 1fr; gap:15px;">
+                                <div class="stat-card" style="background: #E8F5E9;"><h4>Shu oyda jami sotilgan mahsulotlar</h4><div class="value" style="color:var(--green);">184 ta</div></div>
+                                <div class="stat-card" style="background: #E3F2FD;"><h4>Shu oyda kassa (Tushgan sof pul)</h4><div class="value" style="color:var(--navy-light);">84,500,000 so'm</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-sending" class="tab-content">
+                    <div class="ui-card" style="max-width: 700px;">
+                        <h3 class="ui-title">Bot a'zolariga rasm va reklama yuborish</h3>
+                        <div class="form-group"><label>Reklama rasmi (ixtiyoriy)</label><input type="file" class="form-control" accept="image/*"></div>
+                        <div class="form-group"><label>Xabar matni</label><textarea class="form-control" rows="6" placeholder="Bu yerga yozilgan matn rasm ostida hamma userlarga boradi..."></textarea></div>
+                        <button class="btn-ui" style="background-color:var(--navy-light);">Hammaga yuborish 📣</button>
                     </div>
                 </div>
 
                 <div id="tab-profile" class="tab-content">
-                    <div class="ui-card">
-                        <h3 class="ui-title">Parolni o'zgartirish</h3>
-                        <div class="form-group"><label>Eski parol</label><input type="password" class="form-control"></div>
-                        <div class="form-group"><label>Yangi xavfsiz parol</label><input type="password" class="form-control"></div>
-                        <button class="btn-ui">Parolni yangilash 🔐</button>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                        <div class="ui-card">
+                            <h3 class="ui-title">Xavfsizlik & Parol</h3>
+                            <div class="form-group"><label>Eski parol</label><input type="password" class="form-control"></div>
+                            <div class="form-group"><label>Yangi parol</label><input type="password" class="form-control"></div>
+                            <button class="btn-ui">Yangilash 🔐</button>
+                        </div>
+                        <div class="ui-card">
+                            <h3 class="ui-title">Bot & Do'kon Sozlamalari</h3>
+                            <div class="form-group"><label>Bot va Tizim Logotipi (Rasm)</label><input type="file" class="form-control" accept="image/*"></div>
+                            <div class="form-group">
+                                <label>Do'kon holati (Mijozlar uchun bot/sahifa)</label>
+                                <select class="form-control" onchange="document.getElementById('shop-status-indicator').innerText = 'Do\'kon holati: ' + (this.value === 'open' ? 'Ochiq ✅' : 'Yopiq ❌')">
+                                    <option value="open">Ochiq (Sotuv faol) ✅</option>
+                                    <option value="closed">Yopiq (Vaqtincha ishlamaydi) ❌</option>
+                                </select>
+                            </div>
+                            <button class="btn-ui" style="background: var(--navy-light);">Tizimni saqlash ⚙️</button>
+                        </div>
                     </div>
                 </div>
 
@@ -238,34 +286,43 @@
         function handleAdminLogin() {
             const log = document.getElementById('adm-login').value.trim();
             const pas = document.getElementById('adm-password').value.trim();
-            if(log === "admin" && pas === "ota777") {
+            if(log === "admin" && pas === "admin") {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('admin-layout').classList.add('active');
                 initChart();
             } else { alert("Xato!"); }
         }
-
         function handleAdminLogout() { location.reload(); }
 
-        function switchTab(tabName, element) {
+        function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-            
             document.getElementById('tab-' + tabName).classList.add('active');
-            element.classList.add('active');
+            document.getElementById('menu-' + tabName).classList.add('active');
         }
 
+        function filterOrders(type) {
+            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            alert(type + " bo'limi filtri faollashdi.");
+        }
+
+        let myChart = null;
         function initChart() {
             const ctx = document.getElementById('categoryChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
+            if(myChart) { myChart.destroy(); }
+            myChart = new Chart(ctx, {
+                type: 'bar',
                 data: {
                     labels: ['Maishiy texnika', 'Qurilish mollari', 'Uy jihozlari'],
                     datasets: [{
-                        data: [40, 45, 15],
-                        backgroundColor: ['#0B192C', '#FF6B00', '#1E3E62']
+                        label: 'Mahsulotlar miqdori',
+                        data: [24, 98, 45],
+                        backgroundColor: ['#0B192C', '#FF6B00', '#1E3E62'],
+                        borderRadius: 8
                     }]
-                }
+                },
+                options: { responsive: true, maintainAspectRatio: false }
             });
         }
     </script>
