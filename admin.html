@@ -15,7 +15,6 @@
             --text-color: #222222;
             --gray-text: #888888;
             --border-color: #EFEFEF;
-            --success-green: #25D366;
         }
 
         body {
@@ -43,9 +42,8 @@
         .login-btn {
             width: 100%; background: linear-gradient(135deg, #0B192C 0%, #1E3E62 100%);
             color: var(--white); border: none; padding: 14px; border-radius: 10px;
-            font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.2s;
+            font-size: 15px; font-weight: 700; cursor: pointer;
         }
-        .login-btn:hover { opacity: 0.9; }
 
         /* MAIN DASHBOARD */
         .dashboard-layout { display: none; min-height: 100vh; }
@@ -54,35 +52,31 @@
         .navbar {
             background-color: var(--navy-blue); color: var(--white); padding: 15px 25px;
             display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .navbar-brand { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .navbar-brand { font-size: 18px; font-weight: 700; }
         .logout-btn { background: rgba(255,255,255,0.15); border: none; color: var(--white); padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
 
         .main-content { padding: 30px 25px; max-width: 1200px; width: 100%; margin: 0 auto; box-sizing: border-box; }
-        
         .grid-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
         @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
 
-        /* CARD STYLES */
-        .admin-card { background-color: var(--white); border-radius: 14px; border: 1px solid var(--border-color); padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.01); }
+        .admin-card { background-color: var(--white); border-radius: 14px; border: 1px solid var(--border-color); padding: 25px; }
         .card-title { margin: 0 0 20px 0; font-size: 18px; font-weight: 700; color: var(--navy-blue); border-bottom: 2px solid var(--light-gray); padding-bottom: 10px; }
 
         label { font-size: 13px; font-weight: 600; color: var(--navy-blue); display: block; margin-bottom: 6px; }
-        select.input-field { appearance: none; }
 
         /* TABLE STYLES */
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
         th { background-color: var(--light-gray); color: var(--navy-blue); padding: 12px; font-weight: 700; border-bottom: 2px solid var(--border-color); }
-        td { padding: 12px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        td { padding: 12px; border-bottom: 1px solid var(--border-color); }
         
-        .p-img-mini { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; background-color: #eee; }
+        .p-img-mini { width: 45px; height: 45px; object-fit: cover; border-radius: 6px; }
         .btn-action { padding: 6px 12px; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; margin-right: 5px; }
         .btn-delete { background-color: #FFE5E5; color: #D32F2F; }
         .btn-edit { background-color: #E5F6FD; color: #0288D1; }
 
-        .save-btn { background-color: var(--orange); color: var(--white); border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(255,107,0,0.2); }
+        .save-btn { background-color: var(--orange); color: var(--white); border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -122,7 +116,7 @@
                     <input type="number" id="prod-price" class="input-field" placeholder="Masalan: 4200000">
 
                     <label>Eski narxi (Skidka bo'lsa - ixtiyoriy)</label>
-                    <input type="number" id="prod-old-price" class="input-field" placeholder="Yo'q bo'lsa bo'sh qoldiring">
+                    <input type="number" id="prod-old-price" class="input-field" placeholder="Bo'sh qoldiring">
 
                     <label>Sotuvdagi qoldiq miqdori</label>
                     <input type="number" id="prod-stock" class="input-field" placeholder="Masalan: 12">
@@ -132,11 +126,10 @@
                         <option value="dona">dona</option>
                         <option value="qop">qop</option>
                         <option value="kg">kg</option>
-                        <option value="metr">metr</option>
                     </select>
 
                     <label>Rasm internet linki (URL)</label>
-                    <input type="text" id="prod-image" class="input-field" placeholder="https://picsum.photos/200">
+                    <input type="text" id="prod-image" class="input-field" placeholder="Rasm linkini kiriting">
 
                     <button class="save-btn" onclick="saveProductToServer()">Mahsulotni saqlash ✨</button>
                 </div>
@@ -170,14 +163,12 @@
 
     <script>
         const API_BASE = "https://829t3538-8000.inc1.devtunnels.ms";
-        let editProductId = null; // Tahrirlash rejimini kuzatish uchun variable
+        let editProductId = null;
 
-        // Xavfsizlik: Parolni tekshirish (Loyiha egasi uchun maxfiy login/parol)
         function handleAdminLogin() {
             const log = document.getElementById('adm-login').value.trim();
             const pas = document.getElementById('adm-password').value.trim();
 
-            // Soddalashtirilgan va xavfsiz login sharti
             if (log === "admin" && pas === "ota777") {
                 sessionStorage.setItem("admin_logged", "true");
                 showDashboard();
@@ -203,7 +194,6 @@
             location.reload();
         }
 
-        // Serverdan barcha mahsulotlarni olib kelib jadvalga joylash
         async function fetchAdminProducts() {
             try {
                 const response = await fetch(`${API_BASE}/get-products`, { 
@@ -212,7 +202,7 @@
                 const products = await response.json();
                 renderAdminTable(products);
             } catch (error) {
-                console.error("Xatolik:", error);
+                document.getElementById('products-table-body').innerHTML = `<tr><td colspan='6' style='text-align:center; color:red;'>Server ulanish xatosi!</td></tr>`;
             }
         }
 
@@ -220,8 +210,8 @@
             const tbody = document.getElementById('products-table-body');
             tbody.innerHTML = '';
 
-            if (products.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Mahsulotlar mavjud emas. Birinchi mahsulotni qo'shing!</td></tr>`;
+            if (!products || products.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">Mahsulotlar mavjud emas.</td></tr>`;
                 return;
             }
 
@@ -243,7 +233,6 @@
             });
         }
 
-        // Yangi mahsulot yuborish (Yoki tahrirlash)
         async function saveProductToServer() {
             const title = document.getElementById('prod-title').value.trim();
             const category = document.getElementById('prod-category').value;
@@ -255,7 +244,7 @@
             const image_url = document.getElementById('prod-image').value.trim();
 
             if (!title || isNaN(price) || isNaN(stock)) {
-                alert("Iltimos barcha kerakli maydonlarni to'ldiring!");
+                alert("Iltimos barcha maydonlarni to'ldiring!");
                 return;
             }
 
@@ -263,10 +252,9 @@
 
             try {
                 let url = `${API_BASE}/add-product`;
-                // Agar tahrirlash bo'lsa, payload ichiga ID qo'shamiz va boshqa endpointga yuborishimiz ham mumkin
                 if (editProductId) {
                     payload.id = editProductId;
-                    url = `${API_BASE}/update-product`; // Backendda update endpointi bo'lishi kerak
+                    url = `${API_BASE}/update-product`;
                 }
 
                 const response = await fetch(url, {
@@ -276,7 +264,7 @@
                 });
 
                 if (response.ok) {
-                    alert(editProductId ? "Mahsulot yangilandi!" : "Yangi mahsulot muvaffaqiyatli qo'shildi!");
+                    alert(editProductId ? "Mahsulot yangilandi!" : "Mahsulot qo'shildi!");
                     resetForm();
                     fetchAdminProducts();
                 } else {
@@ -287,20 +275,15 @@
             }
         }
 
-        // Mahsulotni o'chirish drayveri
         async function deleteProductFromServer(id) {
-            if (!confirm("Ushbu mahsulotni bazadan butunlay o'chirmoqchimisiz?")) return;
-
+            if (!confirm("O'chirmoqchimisiz?")) return;
             try {
-                const response = await fetch(`${API_BASE}/delete-product/${id}`, {
-                    method: 'DELETE'
-                });
-
+                const response = await fetch(`${API_BASE}/delete-product/${id}`, { method: 'DELETE' });
                 if (response.ok) {
-                    alert("Mahsulot o'chirildi!");
+                    alert("O'chirildi!");
                     fetchAdminProducts();
                 } else {
-                    alert("O'chirishda xatolik bo'ldi.");
+                    alert("Xatolik bo'ldi.");
                 }
             } catch (error) {
                 alert("Server xatosi!");
@@ -316,7 +299,6 @@
             document.getElementById('prod-stock').value = product.stock;
             document.getElementById('prod-unit').value = product.unit_type || "dona";
             document.getElementById('prod-image').value = product.image_url || "";
-            
             document.querySelector('.save-btn').innerText = "O'zgarishlarni saqlash 🔄";
         }
 
