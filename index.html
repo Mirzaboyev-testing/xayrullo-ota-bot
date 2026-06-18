@@ -13,167 +13,187 @@
             --white: #FFFFFF;
             --light-gray: #F4F6F9;
             --orange: #FF6B00;
-            --text-color: #333333;
-            --gray-text: #777777;
-            --border-color: #EAEAEA;
+            --text-color: #222222;
+            --gray-text: #888888;
+            --border-color: #EFEFEF;
+            --premium-gradient: linear-gradient(135deg, #0B192C 0%, #1E3E62 100%);
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--light-gray);
-            margin: 0;
-            padding: 0;
-            color: var(--text-color);
+            margin: 0; padding: 0; color: var(--text-color);
+            overflow-x: hidden;
         }
 
-        .page { display: none; padding-bottom: 140px; }
+        .page { display: none; padding: 15px; padding-bottom: 150px; animation: fadeIn 0.3s ease; }
         .page.active { display: block; }
 
-        /* RO‘YXATDAN O‘TISH SAHIFASI */
-        .auth-container {
-            background-color: var(--white);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 30px 20px;
-            box-sizing: border-box;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .auth-logo { font-size: 24px; font-weight: 800; color: var(--navy-blue); margin-bottom: 25px; }
-        .form-group { width: 100%; margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-        
-        .lang-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .lang-btn {
-            padding: 14px; border: 1px solid var(--border-color); border-radius: 12px;
-            background-color: #FAFAFA; font-size: 14px; font-weight: 600; cursor: pointer;
-        }
-        .lang-btn.active { background-color: var(--navy-blue); color: var(--white); }
-
-        .input-field {
-            width: 100%; padding: 14px; border: 1px solid var(--border-color);
-            border-radius: 12px; font-size: 14px; background-color: #FAFAFA; box-sizing: border-box;
-        }
-
-        .submit-btn {
-            width: 100%; background-color: var(--navy-blue); color: var(--white);
-            border: none; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer;
-        }
-
-        /* ASOSIY PROGRAMMA */
-        .header {
-            background-color: var(--white); padding: 15px; display: flex;
-            align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color);
-        }
+        /* HEADER & REGISTRATION */
+        .header { background-color: var(--white); padding: 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
         .header-title { font-size: 18px; font-weight: 700; color: var(--navy-blue); margin: 0; }
-        .lang-switch-header {
-            background: none; border: 1px solid var(--navy-blue); padding: 4px 10px;
-            border-radius: 6px; font-size: 12px; font-weight: 700; color: var(--navy-blue); cursor: pointer;
-        }
+        .lang-btn-header { background: none; border: 1px solid var(--navy-blue); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; color: var(--navy-blue); }
 
-        .search-container { padding: 10px 15px; background-color: var(--white); }
-        .search-box input {
-            width: 100%; padding: 12px 15px; border: 1px solid var(--border-color);
-            border-radius: 8px; background-color: #FAFAFA; box-sizing: border-box; outline: none;
-        }
+        .auth-container { background-color: var(--white); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box; }
+        .auth-logo { font-size: 26px; font-weight: 800; color: var(--navy-blue); margin-bottom: 30px; letter-spacing: 1px; }
+        .input-field { width: 100%; padding: 15px; border: 1px solid var(--border-color); border-radius: 12px; font-size: 14px; background-color: #FAFAFA; box-sizing: border-box; margin-bottom: 15px; outline: none; }
+        .submit-btn { width: 100%; background: var(--premium-gradient); color: var(--white); border: none; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; }
 
-        .categories-container { display: flex; gap: 10px; padding: 10px 15px; overflow-x: auto; background-color: var(--white); }
-        .category-btn {
-            padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color);
-            background-color: #f5f5f5; font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer;
-        }
-        .category-btn.active { background-color: var(--navy-blue); color: var(--white); }
+        /* SEARCH & MAIN CATEGORIES */
+        .search-box input { width: 100%; padding: 14px 15px; border: 1px solid var(--border-color); border-radius: 12px; background-color: var(--white); box-sizing: border-box; outline: none; font-size: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .categories-scroll { display: flex; gap: 10px; padding: 15px 0; overflow-x: auto; scrollbar-width: none; }
+        .categories-scroll::-webkit-scrollbar { display: none; }
+        .cat-chip { padding: 10px 18px; border-radius: 25px; background-color: var(--white); font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; border: 1px solid var(--border-color); color: var(--navy-blue); transition: all 0.2s; }
+        .cat-chip.active { background-color: var(--navy-blue); color: var(--white); border-color: var(--navy-blue); }
 
-        /* MAHSULOTLAR RO'YXATI */
-        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px; }
-        .product-card { background-color: var(--white); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
-        
-        .product-img { width: 100%; height: 140px; object-fit: cover; background-color: #EAEAEA; }
-        .discount-badge { position: absolute; top: 8px; right: 8px; background-color: var(--orange); color: var(--white); font-size: 11px; font-weight: 700; padding: 3px 6px; border-radius: 4px; }
+        /* PRODUCTS GRID */
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .product-card { background-color: var(--white); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid var(--border-color); }
+        .product-img { width: 100%; height: 135px; object-fit: cover; background-color: #FAFAFA; }
+        .discount-tag { position: absolute; top: 10px; right: 10px; background-color: var(--orange); color: var(--white); font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 8px; }
+        .product-info { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-title { font-size: 13px; font-weight: 600; margin: 0 0 6px 0; line-height: 1.4; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .product-stock { font-size: 11px; color: var(--gray-text); margin-bottom: 10px; }
+        .current-price { font-size: 15px; font-weight: 700; color: var(--navy-blue); margin-top: auto; margin-bottom: 8px; }
+        .add-btn { background-color: #FFF0E5; color: var(--orange); border: none; padding: 10px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; transition: background 0.2s; }
+        .add-btn:active { background-color: #FFDCC4; }
 
-        .product-info { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; }
-        .product-title { font-size: 14px; font-weight: 600; margin: 0 0 4px 0; }
-        .product-stock { font-size: 11px; color: var(--gray-text); margin-bottom: 8px; }
-        .price-container { margin-top: auto; margin-bottom: 10px; }
-        .old-price { font-size: 11px; color: #999; text-decoration: line-through; }
-        .current-price { font-size: 15px; font-weight: 700; }
-        
-        .add-to-cart-btn { background-color: var(--orange); color: var(--white); border: none; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+        /* KREATIV KATALOG TAB */
+        .katalog-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .katalog-banner { background: var(--premium-gradient); padding: 25px; border-radius: 16px; color: var(--white); position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(11,25,44,0.15); }
+        .katalog-banner h3 { margin: 0 0 8px 0; font-size: 20px; }
+        .katalog-banner p { margin: 0; font-size: 13px; opacity: 0.8; }
+        .katalog-row { background-color: var(--white); padding: 16px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-color); cursor: pointer; }
+        .katalog-row-left { display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 15px; }
+        .katalog-icon { font-size: 24px; background-color: #F4F6F9; padding: 10px; border-radius: 12px; }
 
-        /* FLOATING FOOTER CART (FAKAT MAXSULOT BO'LSA CHIQADI) */
-        .cart-footer {
-            position: fixed; bottom: 65px; left: 0; right: 0; background-color: var(--white);
-            padding: 12px 15px; box-shadow: 0 -3px 10px rgba(0,0,0,0.05);
-            display: none; align-items: center; justify-content: space-between; z-index: 150;
-        }
+        /* KREATIV SAVAT TAB */
+        .cart-card { background-color: var(--white); padding: 12px; border-radius: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border-color); }
+        .cart-details { flex-grow: 1; }
+        .cart-title { font-size: 13px; font-weight: 600; margin: 0 0 4px 0; }
+        .cart-price { font-size: 14px; font-weight: 700; color: var(--navy-blue); }
+        .quantity-control { display: flex; align-items: center; gap: 12px; background-color: #F4F6F9; padding: 4px; border-radius: 8px; }
+        .q-btn { border: none; background: var(--white); font-size: 16px; font-weight: 700; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
 
-        .order-btn { background-color: var(--orange); color: var(--white); border: none; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; }
+        /* KREATIV PROFIL TAB */
+        .profile-card { background: var(--premium-gradient); padding: 25px; border-radius: 20px; color: var(--white); box-shadow: 0 6px 20px rgba(11,25,44,0.2); position: relative; margin-bottom: 20px; }
+        .profile-badge { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .profile-name { font-size: 22px; font-weight: 700; margin: 0 0 5px 0; }
+        .profile-meta { font-size: 13px; opacity: 0.7; margin-bottom: 15px; }
+        .stat-box { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: rgba(255,255,255,0.08); padding: 15px; border-radius: 12px; }
+        .stat-value { font-size: 16px; font-weight: 700; }
+        .stat-label { font-size: 11px; opacity: 0.6; }
 
-        /* PASTKI NAVBAR */
-        .bottom-navbar { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--white); height: 65px; border-top: 1px solid var(--border-color); display: grid; grid-template-columns: repeat(4, 1fr); z-index: 200; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--gray-text); cursor: pointer; gap: 4px; position: relative; }
+        /* FLOATING FOOTER PANEL (FAKAT SAVAT TO'LGANDA CHIQADI) */
+        .cart-footer { position: fixed; bottom: 75px; left: 15px; right: 15px; background-color: var(--navy-blue); padding: 14px 20px; border-radius: 16px; box-shadow: 0 8px 25px rgba(11,25,44,0.25); display: none; align-items: center; justify-content: space-between; z-index: 150; color: var(--white); animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .order-btn { background-color: var(--orange); color: var(--white); border: none; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(255,107,0,0.3); }
+
+        /* STITCH NAVBAR */
+        .bottom-navbar { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--white); height: 68px; border-top: 1px solid var(--border-color); display: grid; grid-template-columns: repeat(4, 1fr); z-index: 200; box-shadow: 0 -4px 10px rgba(0,0,0,0.02); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--gray-text); cursor: pointer; gap: 5px; position: relative; }
         .nav-item.active { color: var(--orange); }
-        .nav-icon { font-size: 20px; }
-        .nav-badge { position: absolute; top: 6px; right: 22px; background-color: var(--orange); color: var(--white); font-size: 9px; padding: 2px 5px; border-radius: 50%; font-weight: 700; }
-        .static-page-content { padding: 20px; background-color: var(--white); margin: 15px; border-radius: 12px; }
+        .nav-icon { font-size: 20px; transition: transform 0.2s; }
+        .nav-item.active .nav-icon { transform: scale(1.15); }
+        .nav-badge { position: absolute; top: 8px; right: 20px; background-color: var(--orange); color: var(--white); font-size: 9px; padding: 2px 6px; border-radius: 10px; font-weight: 700; }
+
+        /* LOADING INDICATOR */
+        .loading-box { text-align: center; padding: 40px 20px; color: var(--gray-text); font-size: 14px; font-weight: 600; grid-column: span 2; }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid var(--orange); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <!-- 1. RO'YXATDAN O'TISH -->
+    <!-- 1. RO'YXATDAN O'TISH (ONBOARDING) -->
     <div id="auth-page" class="auth-container" style="display: none;">
         <div class="auth-logo">🛡️ XAYRULLO OTA</div>
-        <div class="form-group">
-            <label id="lbl-lang">Alifboni tanlang / Алифбони танланг</label>
+        <div class="form-group" style="width: 100%;">
+            <label style="font-weight:700; font-size:13px; color:var(--navy-blue); margin-bottom:8px; display:block;" id="lbl-lang">Alifboni tanlang / Алифбони танланг</label>
             <div class="lang-selector">
-                <button class="lang-btn active" onclick="setRegLang('uz')">Lotin alifbosi</button>
-                <button class="lang-btn" onclick="setRegLang('kr')">Кирилл алифбоси</button>
+                <button class="lang-btn active" onclick="setRegLang('uz')">Lotincha</button>
+                <button class="lang-btn" onclick="setRegLang('kr')">Кириллча</button>
             </div>
         </div>
-        <div class="form-group">
-            <label id="lbl-name">Ism va Familiya</label>
+        <div class="form-group" style="width: 100%; margin-top:15px;">
+            <label style="font-weight:700; font-size:13px; color:var(--navy-blue); margin-bottom:8px; display:block;" id="lbl-name">Ism va Familiya</label>
             <input type="text" id="reg-name" class="input-field" placeholder="Ismingizni kiriting">
         </div>
-        <div class="form-group">
-            <label id="lbl-phone">Telefon raqami</label>
+        <div class="form-group" style="width: 100%;">
+            <label style="font-weight:700; font-size:13px; color:var(--navy-blue); margin-bottom:8px; display:block;" id="lbl-phone">Telefon raqami</label>
             <input type="tel" id="reg-phone" class="input-field" value="+998 ">
         </div>
-        <button class="submit-btn" onclick="submitRegistration()" id="btn-reg-text">Ro'yxatdan o'tish</button>
+        <button class="submit-btn" onclick="submitRegistration()" id="btn-reg-text" style="margin-top:20px;">Ro'yxatdan o'tish</button>
     </div>
 
-    <!-- 2. ASOSIY PROGRAMMA -->
+    <!-- 2. ASOSIY DASTUR INTERFEYSI -->
     <div id="main-app" style="display: none;">
         <div class="header">
             <h1 class="header-title" id="app-header-title">Xayrullo ota savdo markazi</h1>
-            <button class="lang-switch-header" onclick="toggleGlobalLanguage()" id="btn-toggle-lang">LOTIN</button>
+            <button class="lang-btn-header" onclick="toggleGlobalLanguage()" id="btn-toggle-lang">LOTIN</button>
         </div>
 
-        <!-- TABS -->
+        <!-- TAB-1: ASOSIY SAHIFA -->
         <div id="page-asosiy" class="page active">
             <div class="search-container"><div class="search-box"><input type="text" id="search-input" placeholder="Mahsulotlarni qidirish..." oninput="filterProducts()"></div></div>
-            <div class="categories-container">
-                <button class="category-btn active" id="cat-all" onclick="selectCategory('all', this)">Barchasi</button>
-                <button class="category-btn" id="cat-texnika" onclick="selectCategory('Maishiy texnika', this)">Maishiy texnika</button>
-                <button class="category-btn" id="cat-mollari" onclick="selectCategory('Qurilish mollari', this)">Qurilish mollari</button>
+            <div class="categories-scroll">
+                <button class="cat-chip active" id="cat-all" onclick="selectCategory('all', this)">Barchasi</button>
+                <button class="cat-chip" id="cat-texnika" onclick="selectCategory('Maishiy texnika', this)">Maishiy texnika</button>
+                <button class="cat-chip" id="cat-mollari" onclick="selectCategory('Qurilish mollari', this)">Qurilish mollari</button>
             </div>
-            <div class="products-grid" id="products-container"></div>
+            <div class="products-grid" id="products-container">
+                <div class="loading-box"><div class="spinner"></div><span id="txt-loading">Yuklanmoqda...</span></div>
+            </div>
         </div>
 
-        <div id="page-katalog" class="page"><div class="static-page-content"><h3 id="title-katalog">Katalog bo'limi</h3></div></div>
-        <div id="page-savat" class="page"><div class="static-page-content"><h3 id="title-savat">Sizning savatingiz</h3><div id="cart-items-list">Savat bo'sh</div></div></div>
-        <div id="page-profil" class="page"><div class="static-page-content"><h3 id="title-profil">Foydalanuvchi profili</h3><p>ID: <span id="prof-id">-</span></p></div></div>
+        <!-- TAB-2: KREATIV KATALOG SAHIFA -->
+        <div id="page-katalog" class="page">
+            <div class="katalog-banner">
+                <h3 id="kat-banner-title">Raqamli Katalog</h3>
+                <p id="kat-banner-desc">Eng sifatli mollarni toifalangan holatda oson toping.</p>
+            </div>
+            <div class="katalog-grid" style="margin-top:20px;">
+                <div class="katalog-row" onclick="selectCategoryTab('Maishiy texnika')">
+                    <div class="katalog-row-left"><span class="katalog-icon">📺</span><span id="kat-lbl-1">Maishiy texnika</span></div>
+                    <span style="color:var(--gray-text)">➔</span>
+                </div>
+                <div class="katalog-row" onclick="selectCategoryTab('Qurilish mollari')">
+                    <div class="katalog-row-left"><span class="katalog-icon">🧱</span><span id="kat-lbl-2">Qurilish mollari</span></div>
+                    <span style="color:var(--gray-text)">➔</span>
+                </div>
+            </div>
+        </div>
 
-        <!-- Floating Cart (Faqat tovar bo'lsa chiqadi) -->
+        <!-- TAB-3: KREATIV SAVAT SAHIFA -->
+        <div id="page-savat" class="page">
+            <div id="cart-items-wrapper"></div>
+        </div>
+
+        <!-- TAB-4: KREATIV PROFIL SAHIFA -->
+        <div id="page-profil" class="page">
+            <div class="profile-card">
+                <div class="profile-badge" id="prof-status">Mijoz</div>
+                <h2 class="profile-name" id="prof-display-name">Foydalanuvchi</h2>
+                <div class="profile-meta" id="prof-display-phone">+998 -- --- -- --</div>
+                <div class="stat-box">
+                    <div><div class="stat-value" id="prof-stat-id">-</div><div class="stat-label">ID RAQAM</div></div>
+                    <div><div class="stat-value" id="prof-stat-status">Lotin</div><div class="stat-label">ALIFBO</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Savat paneli (Faqat tovar bo'lsa chiqadi - QA Talabi) -->
         <div class="cart-footer" id="floating-cart">
             <div>
-                <span id="cart-count">Savat: 0 mahsulot</span><br>
-                <span id="cart-total" style="font-size: 18px; font-weight: 700; color: var(--navy-blue);">0 so'm</span>
+                <span id="cart-count">Savat: 0 ta mahsulot</span><br>
+                <span id="cart-total" style="font-size: 16px; font-weight: 700;">0 so'm</span>
             </div>
             <button class="order-btn" onclick="sendOrder()" id="btn-order">Buyurtma berish ➔</button>
         </div>
 
-        <!-- BOTTOM NAVBAR -->
+        <!-- STITCH NAVIGATSIYA -->
         <div class="bottom-navbar">
             <div class="nav-item active" onclick="switchTab('asosiy', this)"><span class="nav-icon">🏠</span><span id="nav-lbl-home">Asosiy</span></div>
             <div class="nav-item" onclick="switchTab('katalog', this)"><span class="nav-icon">📱</span><span id="nav-lbl-cat">Katalog</span></div>
@@ -185,44 +205,48 @@
     <script>
         const API_BASE = "https://829t3538-8000.inc1.devtunnels.ms";
         let allProducts = [];
-        let cart = JSON.parse(localStorage.getItem('tg_shop_cart')) || {}; // Savatni eslab qolish (QA talabi)
+        let cart = JSON.parse(localStorage.getItem('tg_shop_cart')) || {}; 
         let currentLang = 'uz';
         let telegramUser = null;
 
+        // Lotin va Kirill lug'at tizimi (Faqat o'zbek tili harflari)
         const dictionary = {
             uz: {
                 lblName: "Ism va Familiya", lblPhone: "Telefon raqami", btnReg: "Ro'yxatdan o'tish",
                 searchPlaceholder: "Mahsulotlarni qidirish...", catAll: "Barchasi", orderBtn: "Buyurtma berish ➔",
-                homeTab: "Asosiy", catTab: "Katalog", cartTab: "Savat", profTab: "Profil", cartLabel: "Savat:", emptyCart: "Savat bo'sh"
+                homeTab: "Asosiy", catTab: "Katalog", cartTab: "Savat", profTab: "Profil", cartLabel: "Savat:", emptyCart: "Savat bo'sh 🛒",
+                loading: "Yuklanmoqda...", status: "Doimiy mijoz", bannerT: "Raqamli Katalog", bannerD: "Eng sifatli mollarni oson toping",
+                texnika: "Maishiy texnika", mollari: "Qurilish mollari"
             },
             kr: {
                 lblName: "Исм ва Фамилия", lblPhone: "Телефон рақами", btnReg: "Рўйхатдан ўтиш",
                 searchPlaceholder: "Маҳсулотларни қидириш...", catAll: "Барчаси", orderBtn: "Буюртма бериш ➔",
-                homeTab: "Асосий", catTab: "Каталог", cartTab: "Сават", profTab: "Профил", cartLabel: "Сават:", emptyCart: "Сават бўш"
+                homeTab: "Асосий", catTab: "Каталог", cartTab: "Сават", profTab: "Профил", cartLabel: "Сават:", emptyCart: "Сават бўш 🛒",
+                loading: "Юкланмоқда...", status: "Доимий мижоз", bannerT: "Рақамли Каталог", bannerD: "Энг сифатли молларни осон топинг",
+                texnika: "Маиший техника", mollari: "Қурилиш моллари"
             }
         };
 
-        async function checkUserAuthentication() {
+        function checkUserAuthentication() {
             if (window.Telegram && window.Telegram.WebApp) {
                 Telegram.WebApp.ready();
                 Telegram.WebApp.expand();
-                telegramUser = Telegram.WebApp.initDataUnsafe.user || { id: 99999 };
+                telegramUser = Telegram.WebApp.initDataUnsafe.user || { id: 5294763020, first_name: "Test" };
                 
-                // Optimizatsiya: Avval UI yuklanadi, API keyin fon rejimida chaqiriladi (Sekinlashuvni oldini olish uchun)
                 if (!localStorage.getItem(`reg_${telegramUser.id}`)) {
-                    showAuthPage();
+                    document.getElementById('auth-page').style.display = 'flex';
                 } else {
                     showMainApp();
                 }
             }
         }
 
-        function showAuthPage() { document.getElementById('auth-page').style.display = 'flex'; }
         function showMainApp() {
             document.getElementById('auth-page').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
             fetchProducts();
             updateCartUI();
+            updateProfileUI();
         }
 
         function setRegLang(lang) {
@@ -245,18 +269,28 @@
             document.getElementById('btn-reg-text').innerText = d.btnReg;
             document.getElementById('search-input').placeholder = d.searchPlaceholder;
             document.getElementById('cat-all').innerText = d.catAll;
+            document.getElementById('cat-texnika').innerText = d.texnika;
+            document.getElementById('cat-mollari').innerText = d.mollari;
             document.getElementById('btn-order').innerText = d.orderBtn;
             document.getElementById('nav-lbl-home').innerText = d.homeTab;
             document.getElementById('nav-lbl-cat').innerText = d.catTab;
             document.getElementById('nav-lbl-cart').innerText = d.cartTab;
             document.getElementById('nav-lbl-prof').innerText = d.profTab;
+            document.getElementById('kat-banner-title').innerText = d.bannerT;
+            document.getElementById('kat-banner-desc').innerText = d.bannerD;
+            document.getElementById('kat-lbl-1').innerText = d.texnika;
+            document.getElementById('kat-lbl-2').innerText = d.mollari;
+            
             updateCartUI();
+            updateProfileUI();
+            if (document.getElementById('page-savat').classList.contains('active')) renderCartPage();
         }
 
         function submitRegistration() {
             const name = document.getElementById('reg-name').value.trim();
-            if (!name) return alert("Ismni kiriting!");
-            localStorage.setItem(`reg_${telegramUser.id}`, JSON.stringify({ name }));
+            const phone = document.getElementById('reg-phone').value.trim();
+            if (!name || phone.length < 9) return alert("Ma'lumotlarni to'liq kiriting!");
+            localStorage.setItem(`reg_${telegramUser.id}`, JSON.stringify({ name, phone }));
             showMainApp();
         }
 
@@ -268,32 +302,48 @@
             if (tabId === 'savat') renderCartPage();
         }
 
+        function selectCategoryTab(category) {
+            switchTab('asosiy', document.querySelectorAll('.nav-item')[0]);
+            if(category === 'Maishiy texnika') selectCategory('Maishiy texnika', document.getElementById('cat-texnika'));
+            else selectCategory('Qurilish mollari', document.getElementById('cat-mollari'));
+        }
+
         async function fetchProducts() {
             try {
                 const response = await fetch(`${API_BASE}/get-products`, { headers: { "X-Tunnel-Skip-Anti-Phishing-Page": "true" } });
                 allProducts = await response.json();
                 renderProducts(allProducts);
             } catch (error) {
-                document.getElementById('products-container').innerHTML = `<div style="grid-column:span 2;text-align:center;color:red;padding:20px;">Port xatosi! Serverni yoqing.</div>`;
+                // Port xatosi bo'lsa chiroyli blok chiqadi, Web App bloklanmaydi
+                document.getElementById('products-container').innerHTML = `<div style="grid-column:span 2;text-align:center;color:red;padding:40px 10px;font-weight:600;">Port xatosi! Uvicorn yoki Portni tekshiring.</div>`;
             }
         }
 
         function renderProducts(products) {
             const container = document.getElementById('products-container');
             container.innerHTML = '';
+            if(products.length === 0) { container.innerHTML = `<div style="grid-column:span 2;text-align:center;color:#888;padding:20px;">Mahsulot yo'q</div>`; return; }
+            
             products.forEach(p => {
-                // Rasm manzili tekshiruvi (Agar bazada rasm linki bo'lsa o'shani qo'yadi, bo'lmasa tayyor rasm)
+                let discountBadge = '';
+                if (p.old_price && p.old_price > p.price) {
+                    const pct = Math.round(((p.old_price - p.price) / p.old_price) * 100);
+                    discountBadge = `<div class="discount-tag">-${pct}%</div>`;
+                }
+
+                // Agar bazada rasm yuklanmagan bo'lsa standart rasm chiqadi (Admin tizimi uchun moslashuv)
                 const imgUrl = p.image_url ? p.image_url : "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400";
                 
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
+                    ${discountBadge}
                     <img src="${imgUrl}" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400'">
                     <div class="product-info">
                         <h3 class="product-title">${p.title}</h3>
                         <span class="product-stock">Qoldiq: ${p.stock}</span>
-                        <div class="price-container"><div class="current-price">${p.price.toLocaleString()} so'm</div></div>
-                        <button class="add-to-cart-btn" onclick="addToCart(${p.id})">🛒 Savatga</button>
+                        <div class="current-price">${p.price.toLocaleString()} so'm</div>
+                        <button class="add-btn" onclick="addToCart(${p.id})">+ Savatga</button>
                     </div>`;
                 container.appendChild(card);
             });
@@ -303,10 +353,18 @@
             const product = allProducts.find(p => p.id === id);
             if (!product) return;
             if (cart[id]) cart[id].quantity++;
-            else cart[id] = { title: product.title, price: product.price, quantity: 1 };
-            
-            localStorage.setItem('tg_shop_cart', JSON.stringify(cart)); // Keshga yozish
+            else cart[id] = { id: product.id, title: product.title, price: product.price, quantity: 1 };
+            localStorage.setItem('tg_shop_cart', JSON.stringify(cart));
             updateCartUI();
+        }
+
+        function changeQuantity(id, delta) {
+            if (!cart[id]) return;
+            cart[id].quantity += delta;
+            if (cart[id].quantity <= 0) delete cart[id];
+            localStorage.setItem('tg_shop_cart', JSON.stringify(cart));
+            updateCartUI();
+            if (document.getElementById('page-savat').classList.contains('active')) renderCartPage();
         }
 
         function updateCartUI() {
@@ -314,32 +372,78 @@
             Object.values(cart).forEach(i => { totalItems += i.quantity; totalPrice += i.price * i.quantity; });
 
             const d = dictionary[currentLang];
-            document.getElementById('cart-count').innerText = `${d.cartLabel} ${totalItems}`;
+            document.getElementById('cart-count').innerText = `${d.cartLabel} ${totalItems} ta`;
             document.getElementById('cart-total').innerText = `${totalPrice.toLocaleString()} so'm`;
 
-            // QA Talabi: Faqat mahsulot tanlanganda buyurtma paneli chiqadi
             const floatingCart = document.getElementById('floating-cart');
+            const badge = document.getElementById('nav-cart-badge');
+            
             if (totalItems > 0) {
                 floatingCart.style.display = 'flex';
-                document.getElementById('nav-cart-badge').style.display = 'block';
-                document.getElementById('nav-cart-badge').innerText = totalItems;
+                badge.style.display = 'block';
+                badge.innerText = totalItems;
             } else {
                 floatingCart.style.display = 'none';
-                document.getElementById('nav-cart-badge').style.display = 'none';
+                badge.style.display = 'none';
             }
         }
 
         function renderCartPage() {
-            const container = document.getElementById('cart-items-list');
-            if (Object.keys(cart).length === 0) { container.innerHTML = dictionary[currentLang].emptyCart; return; }
-            let html = '';
-            Object.values(cart).forEach(i => { html += `<p>${i.title} x ${i.quantity} - ${(i.price * i.quantity).toLocaleString()} so'm</p>`; });
+            const container = document.getElementById('cart-items-wrapper');
+            if (Object.keys(cart).length === 0) { 
+                container.innerHTML = `<div style="text-align:center;padding:50px 20px;color:#888;font-weight:600;">${dictionary[currentLang].emptyCart}</div>`; 
+                return; 
+            }
+            
+            let html = `<h3 style="margin-top:0; margin-bottom:15px; font-size:18px;">${dictionary[currentLang].cartTab}</h3>`;
+            Object.values(cart).forEach(i => {
+                html += `
+                    <div class="cart-card">
+                        <div class="cart-details">
+                            <h4 class="cart-title">${i.title}</h4>
+                            <div class="cart-price">${(i.price * i.quantity).toLocaleString()} so'm</div>
+                        </div>
+                        <div class="quantity-control">
+                            <button class="q-btn" onclick="changeQuantity(${i.id}, -1)">-</button>
+                            <span style="font-weight:700; font-size:14px; min-width:15px; text-align:center;">${i.quantity}</span>
+                            <button class="q-btn" onclick="changeQuantity(${i.id}, 1)">+</button>
+                        </div>
+                    </div>`;
+            });
             container.innerHTML = html;
+        }
+
+        function updateProfileUI() {
+            if (telegramUser) {
+                document.getElementById('prof-stat-id').innerText = telegramUser.id;
+                document.getElementById('prof-stat-status').innerText = currentLang === 'uz' ? 'Lotin' : 'Кирилл';
+                document.getElementById('prof-status').innerText = dictionary[currentLang].status;
+                const localData = JSON.parse(localStorage.getItem(`reg_${telegramUser.id}`));
+                if (localData) {
+                    document.getElementById('prof-display-name').innerText = localData.name;
+                    document.getElementById('prof-display-phone').innerText = localData.phone;
+                }
+            }
         }
 
         function filterProducts() {
             const q = document.getElementById('search-input').value.toLowerCase();
             renderProducts(allProducts.filter(p => p.title.toLowerCase().includes(q)));
+        }
+
+        function selectCategory(cat, element) {
+            document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+            if (cat === 'all') renderProducts(allProducts);
+            else renderProducts(allProducts.filter(p => p.title.toLowerCase().includes(cat.toLowerCase().split(' ')[0])));
+        }
+
+        function sendOrder() {
+            if (Object.keys(cart).length === 0) return;
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.sendData(JSON.stringify({ order_items: cart }));
+                window.Telegram.WebApp.close();
+            }
         }
 
         window.onload = checkUserAuthentication;
