@@ -32,19 +32,21 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* HEADER & REGISTRATION */
+        /* HEADER */
         .header { background-color: var(--white); padding: 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
         .header-title { font-size: 18px; font-weight: 700; color: var(--navy-blue); margin: 0; }
         .lang-btn-header { background: none; border: 1px solid var(--navy-blue); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; color: var(--navy-blue); }
 
+        /* AUTH REGISTRATION */
         .auth-container { background-color: var(--white); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box; }
         .auth-logo { font-size: 26px; font-weight: 800; color: var(--navy-blue); margin-bottom: 30px; letter-spacing: 1px; }
         .input-field { width: 100%; padding: 15px; border: 1px solid var(--border-color); border-radius: 12px; font-size: 14px; background-color: #FAFAFA; box-sizing: border-box; margin-bottom: 15px; outline: none; }
         .submit-btn { width: 100%; background: var(--premium-gradient); color: var(--white); border: none; padding: 16px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; }
 
-        /* SEARCH & MAIN CATEGORIES */
+        /* SEARCH & CHIPS */
+        .search-container { padding: 0 0 10px 0; }
         .search-box input { width: 100%; padding: 14px 15px; border: 1px solid var(--border-color); border-radius: 12px; background-color: var(--white); box-sizing: border-box; outline: none; font-size: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-        .categories-scroll { display: flex; gap: 10px; padding: 15px 0; overflow-x: auto; scrollbar-width: none; }
+        .categories-scroll { display: flex; gap: 10px; padding: 5px 0 15px 0; overflow-x: auto; scrollbar-width: none; }
         .categories-scroll::-webkit-scrollbar { display: none; }
         .cat-chip { padding: 10px 18px; border-radius: 25px; background-color: var(--white); font-size: 13px; font-weight: 600; white-space: nowrap; cursor: pointer; border: 1px solid var(--border-color); color: var(--navy-blue); transition: all 0.2s; }
         .cat-chip.active { background-color: var(--navy-blue); color: var(--white); border-color: var(--navy-blue); }
@@ -55,16 +57,15 @@
         .product-img { width: 100%; height: 135px; object-fit: cover; background-color: #FAFAFA; }
         .discount-tag { position: absolute; top: 10px; right: 10px; background-color: var(--orange); color: var(--white); font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 8px; }
         .product-info { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
-        .product-title { font-size: 13px; font-weight: 600; margin: 0 0 6px 0; line-height: 1.4; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .product-title { font-size: 13px; font-weight: 600; margin: 0 0 4px 0; line-height: 1.4; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .product-stock { font-size: 11px; color: var(--gray-text); margin-bottom: 10px; }
-        .current-price { font-size: 15px; font-weight: 700; color: var(--navy-blue); margin-top: auto; margin-bottom: 8px; }
+        .current-price { font-size: 14px; font-weight: 700; color: var(--navy-blue); margin-top: auto; margin-bottom: 8px; }
         
-        /* SMART QUANTITY BUTTON FOR CARD */
+        /* CARD +/- CONTROLS */
         .card-qty-control { display: flex; align-items: center; justify-content: space-between; background-color: #F4F6F9; border-radius: 10px; padding: 2px; }
         .card-q-btn { border: none; background: var(--white); font-size: 14px; font-weight: 700; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; color: var(--text-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .card-q-num { font-weight: 700; font-size: 13px; color: var(--navy-blue); }
         .add-btn { background-color: #FFF0E5; color: var(--orange); border: none; padding: 11px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; transition: background 0.2s; }
-        .add-btn:active { background-color: #FFDCC4; }
 
         /* KATALOG TAB */
         .katalog-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
@@ -76,12 +77,13 @@
         .katalog-icon { font-size: 24px; background-color: #F4F6F9; padding: 10px; border-radius: 12px; }
 
         /* SAVAT TAB */
-        .cart-card { background-color: var(--white); padding: 14px; border-radius: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border-color); box-shadow: 0 2px 6px rgba(0,0,0,0.01); }
+        .cart-card { background-color: var(--white); padding: 14px; border-radius: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border-color); }
         .cart-details { flex-grow: 1; }
         .cart-title { font-size: 13px; font-weight: 600; margin: 0 0 4px 0; }
         .cart-price { font-size: 14px; font-weight: 700; color: var(--navy-blue); }
         .quantity-control { display: flex; align-items: center; gap: 12px; background-color: #F4F6F9; padding: 4px; border-radius: 8px; }
         .q-btn { border: none; background: var(--white); font-size: 16px; font-weight: 700; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .savat-confirm-box { margin-top: 20px; background-color: var(--white); padding: 15px; border-radius: 14px; border: 1px solid var(--border-color); text-align: center; }
 
         /* PROFIL TAB */
         .profile-card { background: var(--premium-gradient); padding: 25px; border-radius: 20px; color: var(--white); box-shadow: 0 6px 20px rgba(11,25,44,0.2); position: relative; margin-bottom: 20px; }
@@ -92,7 +94,13 @@
         .stat-value { font-size: 16px; font-weight: 700; }
         .stat-label { font-size: 11px; opacity: 0.6; }
 
-        /* FLOATING FOOTER PANEL (KREATIV YANGILANISH + X TUGMASI) */
+        /* DO'KON BILAN BOG'LANISH KARTASI (YANGI BILAN) */
+        .contact-card { background-color: var(--white); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-top: 15px; }
+        .contact-title { font-size: 15px; font-weight: 700; color: var(--navy-blue); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; }
+        .contact-row { font-size: 13px; margin-bottom: 10px; color: #444; }
+        .call-now-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background-color: #25D366; color: var(--white); text-decoration: none; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; margin-top: 5px; }
+
+        /* FLOATING FOOTER PANEL (ASOSIY SAHIFA UCHUN) */
         .cart-footer { position: fixed; bottom: 78px; left: 12px; right: 12px; background-color: var(--navy-blue); padding: 12px 16px; border-radius: 16px; box-shadow: 0 8px 25px rgba(11,25,44,0.25); display: none; align-items: center; justify-content: space-between; z-index: 150; color: var(--white); animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .cart-footer-left { display: flex; align-items: center; gap: 10px; }
@@ -107,7 +115,7 @@
         .nav-item.active .nav-icon { transform: scale(1.15); }
         .nav-badge { position: absolute; top: 8px; right: 20px; background-color: var(--orange); color: var(--white); font-size: 9px; padding: 2px 6px; border-radius: 10px; font-weight: 700; }
 
-        /* LOADING INDICATOR */
+        /* LOADING SPIN */
         .loading-box { text-align: center; padding: 40px 20px; color: var(--gray-text); font-size: 14px; font-weight: 600; grid-column: span 2; }
         .spinner { border: 3px solid #f3f3f3; border-top: 3px solid var(--orange); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -136,14 +144,14 @@
         <button class="submit-btn" onclick="submitRegistration()" id="btn-reg-text" style="margin-top:20px;">Ro'yxatdan o'tish</button>
     </div>
 
-    <!-- 2. ASOSIY INTERFEYS -->
+    <!-- 2. MAIN APP -->
     <div id="main-app" style="display: none;">
         <div class="header">
             <h1 class="header-title" id="app-header-title">Xayrullo ota savdo markazi</h1>
             <button class="lang-btn-header" onclick="toggleGlobalLanguage()" id="btn-toggle-lang">LOTIN</button>
         </div>
 
-        <!-- TAB-1: ASOSIY SAHIFA -->
+        <!-- TAB-1: ASOSIY -->
         <div id="page-asosiy" class="page active">
             <div class="search-container"><div class="search-box"><input type="text" id="search-input" placeholder="Mahsulotlarni qidirish..." oninput="filterProducts()"></div></div>
             <div class="categories-scroll">
@@ -156,7 +164,7 @@
             </div>
         </div>
 
-        <!-- TAB-2: KATALOG SAHIFA -->
+        <!-- TAB-2: KATALOG -->
         <div id="page-katalog" class="page">
             <div class="katalog-banner">
                 <h3 id="kat-banner-title">Raqamli Katalog</h3>
@@ -174,15 +182,19 @@
             </div>
         </div>
 
-        <!-- TAB-3: SAVAT SAHIFA -->
+        <!-- TAB-3: SAVAT -->
         <div id="page-savat" class="page">
             <div id="cart-items-wrapper"></div>
+            <div id="cart-actions-container" style="display:none;" class="savat-confirm-box">
+                <p style="font-weight:700; font-size:15px; margin:0 0 12px 0;" id="txt-total-pay">Umumiy summa: 0 so'm</p>
+                <button class="submit-btn" onclick="sendOrderRequestToAdmin()" id="btn-submit-order" style="background-color: var(--orange);">Do'konga so'rov yuborish ➔</button>
+            </div>
         </div>
 
-        <!-- TAB-4: PROFIL SAHIFA -->
+        <!-- TAB-4: PROFIL -->
         <div id="page-profil" class="page">
             <div class="profile-card">
-                <div class="profile-badge" id="prof-status">Mijoz</div>
+                <div class="profile-badge" id="prof-status">Doimiy mijoz</div>
                 <h2 class="profile-name" id="prof-display-name">Foydalanuvchi</h2>
                 <div class="profile-meta" id="prof-display-phone">+998 -- --- -- --</div>
                 <div class="stat-box">
@@ -190,9 +202,17 @@
                     <div><div class="stat-value" id="prof-stat-status">Lotin</div><div class="stat-label">ALIFBO</div></div>
                 </div>
             </div>
+
+            <!-- DO'KON BILAN BOG'LANISH (SIZ XO'XHLAGANDAY DOYMIY MANZIL VA SOTUVCHI TELEFONI) -->
+            <div class="contact-card">
+                <h3 class="contact-title">🏢 <span id="lbl-contact-title">Do'kon ma'lumotlari</span></h3>
+                <div class="contact-row">📍 <strong id="lbl-address-tag">Manzil:</strong> <span id="lbl-shop-address">Xayrullo Ota savdo markazi, Asosiy bino</span></div>
+                <div class="contact-row">📞 <strong id="lbl-phone-tag">Sotuvchi:</strong> <span id="lbl-shop-phone">+998 90 123 45 67</span></div>
+                <a href="tel:+998901234567" class="call-now-btn" id="btn-call-shop">📞 Sotuvchiga qo'ng'iroq qilish</a>
+            </div>
         </div>
 
-        <!-- Floating Cart Panel (QA + UX Yangilanish: X tugmasi qo'shildi) -->
+        <!-- Floating Cart Panel (Asosiy sahifada yordam beradi) -->
         <div class="cart-footer" id="floating-cart">
             <div class="cart-footer-left">
                 <button class="close-cart-btn" onclick="clearCartCompletely()" title="Savatni tozalash">✕</button>
@@ -201,10 +221,11 @@
                     <span id="cart-total" style="font-size: 15px; font-weight: 700;">0 so'm</span>
                 </div>
             </div>
-            <button class="order-btn" onclick="sendOrder()" id="btn-order">Buyurtma berish ➔</button>
+            <!-- QA Talabi: Bosilganda botdan chiqmaydi, to'g'ridan-to'g'ri SAVAT tabiga o'tadi -->
+            <button class="order-btn" onclick="navigateToCartTab()" id="btn-order">Savatga o'tish ➔</button>
         </div>
 
-        <!-- BOTTOM NAVIGATION -->
+        <!-- BOTTOM NAVBAR -->
         <div class="bottom-navbar">
             <div class="nav-item active" onclick="switchTab('asosiy', this)"><span class="nav-icon">🏠</span><span id="nav-lbl-home">Asosiy</span></div>
             <div class="nav-item" onclick="switchTab('katalog', this)"><span class="nav-icon">📱</span><span id="nav-lbl-cat">Katalog</span></div>
@@ -221,20 +242,27 @@
         let telegramUser = null;
         let selectedCategoryFilter = 'all';
 
+        // DICTIONARY (QA va Profil Buglari 100% to'g'rilangan Kirill lug'ati bilan)
         const dictionary = {
             uz: {
                 lblName: "Ism va Familiya", lblPhone: "Telefon raqami", btnReg: "Ro'yxatdan o'tish",
-                searchPlaceholder: "Mahsulotlarni qidirish...", catAll: "Barchasi", orderBtn: "Buyurtma berish ➔",
+                searchPlaceholder: "Mahsulotlarni qidirish...", catAll: "Barchasi", orderBtn: "Savatga o'tish ➔",
                 homeTab: "Asosiy", catTab: "Katalog", cartTab: "Savat", profTab: "Profil", cartLabel: "Savat:", emptyCart: "Savat bo'sh 🛒",
                 loading: "Yuklanmoqda...", status: "Doimiy mijoz", bannerT: "Raqamli Katalog", bannerD: "Eng sifatli mollarni oson toping",
-                texnika: "Maishiy texnika", mollari: "Qurilish mollari", addCart: "+ Savatga", itemsText: "ta mahsulot"
+                texnika: "Maishiy texnika", mollari: "Qurilish mollari", addCart: "+ Savatga", itemsText: "ta mahsulot",
+                contactT: "Do'kon ma'lumotlari", addrTag: "Manzil:", phoneTag: "Sotuvchi:", callBtn: "📞 Sotuvchiga qo'ng'iroq qilish",
+                totalPay: "Umumiy summa:", submitReq: "Do'konga so'rov yuborish ➔",
+                popupTitle: "Buyurtma qabul qilindi", popupMsg: "Buyurtmangiz muvaffaqiyatli qabul qilindi! Siz bilan 24 soat ichida bog'lanamiz."
             },
             kr: {
                 lblName: "Исм ва Фамилия", lblPhone: "Телефон рақами", btnReg: "Рўйхатдан ўтиш",
-                searchPlaceholder: "Маҳсулотларни қидириш...", catAll: "Барчаси", orderBtn: "Буюртма бериш ➔",
+                searchPlaceholder: "Маҳсулотларни қидириш...", catAll: "Барчаси", orderBtn: "Саватга ўтиш ➔",
                 homeTab: "Асосий", catTab: "Каталог", cartTab: "Сават", profTab: "Профил", cartLabel: "Сават:", emptyCart: "Сават бўш 🛒",
                 loading: "Юкланмоқда...", status: "Доимий мижоз", bannerT: "Рақамли Каталог", bannerD: "Энг сифатли молларни осон топинг",
-                texnika: "Маиший техника", mollari: "Қурилиш моллари", addCart: "+ Саватга", itemsText: "та маҳсулот"
+                texnika: "Маиший техника", mollari: "Қурилиш моллари", addCart: "+ Саватга", itemsText: "та маҳсулот",
+                contactT: "Дўкон маълумотлари", addrTag: "Манзил:", phoneTag: "Сотувчи:", callBtn: "📞 Сотувчига қўнғироқ қилиш",
+                totalPay: "Умумий сумма:", submitReq: "Дўконга сўров юбориш ➔",
+                popupTitle: "Буюртма қабул қилинди", popupMsg: "Буюртмангиз муваффақиятли қабул қилинди! Сиз билан 24 соат ичида боғланамиз."
             }
         };
 
@@ -292,6 +320,13 @@
             document.getElementById('kat-lbl-1').innerText = d.texnika;
             document.getElementById('kat-lbl-2').innerText = d.mollari;
             
+            // Do'kon interfeysi tarjimalari
+            document.getElementById('lbl-contact-title').innerText = d.contactT;
+            document.getElementById('lbl-address-tag').innerText = d.addrTag;
+            document.getElementById('lbl-phone-tag').innerText = d.phoneTag;
+            document.getElementById('btn-call-shop').innerText = d.callBtn;
+            document.getElementById('btn-submit-order').innerText = d.submitReq;
+
             updateCartUI();
             updateProfileUI();
             renderProducts(allProducts); 
@@ -318,6 +353,11 @@
             switchTab('asosiy', document.querySelectorAll('.nav-item')[0]);
             if(category === 'Maishiy texnika') selectCategory('Maishiy texnika', document.getElementById('cat-texnika'));
             else selectCategory('Qurilish mollari', document.getElementById('cat-mollari'));
+        }
+
+        // Floating Footer panelidan Savat oynasiga yo'naltirish (Botdan chiqib ketmaydi!)
+        function navigateToCartTab() {
+            switchTab('savat', document.querySelectorAll('.nav-item')[2]);
         }
 
         async function fetchProducts() {
@@ -355,7 +395,7 @@
 
                 const imgUrl = p.image_url ? p.image_url : "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400";
                 
-                // Smart Button mantiqi: Savatda bor yoki yo'qligiga qarab tugma o'zgaradi
+                // Smart Button mantiqi: Savatda borligiga qarab joyida +/- chiqadi
                 let actionBtnHtml = `<button class="add-btn" onclick="addToCart(${p.id})">${dictionary[currentLang].addCart}</button>`;
                 if (cart[p.id] && cart[p.id].quantity > 0) {
                     actionBtnHtml = `
@@ -366,6 +406,9 @@
                         </div>`;
                 }
 
+                // Qo'shimcha Ideal: Do'kon turi uchun o'lchov birligi qo'shildi (p.unit_type donami, metrmi)
+                const unitStr = p.unit_type ? p.unit_type : "dona";
+
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
@@ -373,7 +416,7 @@
                     <img src="${imgUrl}" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400'">
                     <div class="product-info">
                         <h3 class="product-title">${p.title}</h3>
-                        <span class="product-stock">Qoldiq: ${p.stock}</span>
+                        <span class="product-stock">Qoldiq: ${p.stock} (${unitStr})</span>
                         <div class="current-price">${p.price.toLocaleString()} so'm</div>
                         <div id="product-action-box-${p.id}">${actionBtnHtml}</div>
                     </div>`;
@@ -387,7 +430,7 @@
             cart[id] = { id: product.id, title: product.title, price: product.price, quantity: 1 };
             localStorage.setItem('tg_shop_cart', JSON.stringify(cart));
             updateCartUI();
-            renderProducts(allProducts); // UI tugmachalarini yangilash
+            renderProducts(allProducts); 
         }
 
         function changeQuantity(id, delta) {
@@ -396,7 +439,7 @@
             if (cart[id].quantity <= 0) delete cart[id];
             localStorage.setItem('tg_shop_cart', JSON.stringify(cart));
             updateCartUI();
-            renderProducts(allProducts); // UI yangilash
+            renderProducts(allProducts); 
             if (document.getElementById('page-savat').classList.contains('active')) renderCartPage();
         }
 
@@ -423,9 +466,12 @@
                 floatingCart.style.display = 'flex';
                 badge.style.display = 'block';
                 badge.innerText = totalItems;
+                document.getElementById('cart-actions-container').style.display = 'block';
+                document.getElementById('txt-total-pay').innerText = `${d.totalPay} ${totalPrice.toLocaleString()} so'm`;
             } else {
                 floatingCart.style.display = 'none';
                 badge.style.display = 'none';
+                document.getElementById('cart-actions-container').style.display = 'none';
             }
         }
 
@@ -482,11 +528,28 @@
             renderProducts(allProducts);
         }
 
-        function sendOrder() {
+        // TEPADAN TAYYOR POP-UP CHIQARIB, ADMIN/SOTUVCHIGA SO'ROV YUBORISH (BOT YOPILIB KETMAYDI!)
+        function sendOrderRequestToAdmin() {
             if (Object.keys(cart).length === 0) return;
+            
             if (window.Telegram && window.Telegram.WebApp) {
-                window.Telegram.WebApp.sendData(JSON.stringify({ order_items: cart }));
-                window.Telegram.WebApp.close();
+                const webapp = window.Telegram.WebApp;
+                
+                // Muvaffaqiyatli so'rov uchun ichki Telegram Pop-up ssenariysi (QA Engineer talabi)
+                webapp.showPopup({
+                    title: dictionary[currentLang].popupTitle,
+                    message: dictionary[currentLang].popupMsg,
+                    buttons: [{type: 'ok'}]
+                }, function(buttonId) {
+                    // Xaridor OK bosganidan so'ng orqa fonga ma'lumot jo'natamiz, lekin botni yopmaymiz!
+                    webapp.sendData(JSON.stringify({ order_request: cart }));
+                    clearCartCompletely(); // Savat tozalanadi va foydalanuvchi ilovada qoladi
+                    switchTab('asosiy', document.querySelectorAll('.nav-item')[0]);
+                });
+            } else {
+                alert(dictionary[currentLang].popupMsg);
+                clearCartCompletely();
+                switchTab('asosiy', document.querySelectorAll('.nav-item')[0]);
             }
         }
 
