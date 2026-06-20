@@ -60,7 +60,8 @@
         .product-title { font-size: 13px; font-weight: 600; margin: 0 0 4px 0; line-height: 1.4; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .product-stock { font-size: 11px; color: var(--gray-text); margin-bottom: 10px; }
         .current-price { font-size: 14px; font-weight: 700; color: var(--navy-blue); margin-top: auto; margin-bottom: 8px; }
-        
+        .old-price { font-size: 11px; color: var(--gray-text); text-decoration: line-through; font-weight: 500; margin-left: 6px; }
+
         /* CARD +/- CONTROLS */
         .card-qty-control { display: flex; align-items: center; justify-content: space-between; background-color: #F4F6F9; border-radius: 10px; padding: 2px; }
         .card-q-btn { border: none; background: var(--white); font-size: 14px; font-weight: 700; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; color: var(--text-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
@@ -214,14 +215,19 @@
     </div>
 
     <script>
+        // === YANGI BACKEND SOZLAMALARI ===
+        // Public devtunnel manzili (Telegram WebApp telefondan shu manzilga ulanadi)
         const API_BASE = "https://829t3538-8000.inc1.devtunnels.ms";
+        const PLACEHOLDER_IMG = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400";
+
         let allProducts = [];
         let allCategories = [];
-        let cart = JSON.parse(localStorage.getItem('tg_shop_cart')) || {}; 
+        let cart = JSON.parse(localStorage.getItem('tg_shop_cart')) || {};
         let currentLang = 'uz';
         let telegramUser = null;
-        let selectedCategoryFilter = 'all';
-        let isCartPanelManuallyClosed = false; 
+        let selectedCategoryFilter = 'all'; // 'all' yoki kategoriya IDsi (raqam)
+        let isCartPanelManuallyClosed = false;
+        let shopIsClosed = false; // do'kon yopiq bo'lsa buyurtma bloklanadi
 
         const dictionary = {
             uz: {
@@ -229,34 +235,57 @@
                 searchPlaceholder: "Mahsulotlarni qidirish...", catAll: "Barchasi", orderBtn: "Savatga o'tish ➔",
                 homeTab: "Asosiy", catTab: "Katalog", cartTab: "Savat", profTab: "Profil", cartLabel: "Savat:", emptyCart: "Savat bo'sh 🛒",
                 loading: "Yuklanmoqda...", status: "Doimiy mijoz", bannerT: "Raqamli Katalog", bannerD: "Eng sifatli mollarni oson toping",
-                addCart: "+ Savatga", itemsText: "ta mahsulot",
+                addCart: "+ Savatga", itemsText: "ta mahsulot", stockLabel: "Qoldiq:",
                 contactT: "Do'kon ma'lumotlari", addrTag: "Manzil:", phoneTag: "Sotuvchi:", callBtn: "📞 Sotuvchiga qo'ng'iroq qilish",
                 totalPay: "Umumiy summa:", submitReq: "Do'konga so'rov yuborish ➔",
-                popupTitle: "Buyurtma qabul qilindi", popupMsg: "Buyurtmangiz muvaffaqiyatli qabul qilindi! Siz bilan 24 soat ichida bog'lanamiz."
+                popupTitle: "Buyurtma qabul qilindi", popupMsg: "Buyurtmangiz muvaffaqiyatli qabul qilindi! Siz bilan 24 soat ichida bog'lanamiz.",
+                noProduct: "Mahsulot yo'q", serverError: "Server aloqa xatosi!",
+                shopClosedTitle: "Do'kon yopiq", shopClosedMsg: "Do'konimiz vaqtinchalik yopiq. Tez orada qaytamiz!"
             },
             kr: {
                 lblName: "Исм ва Фамилия", lblPhone: "Телефон рақами", btnReg: "Рўйхатдан ўтиш",
                 searchPlaceholder: "Маҳсулотларни қидириш...", catAll: "Барчаси", orderBtn: "Саватга ўтиш ➔",
                 homeTab: "Асосий", catTab: "Каталог", cartTab: "Сават", profTab: "Профил", cartLabel: "Сават:", emptyCart: "Сават бўш 🛒",
                 loading: "Юкланмоқда...", status: "Доимий мижоз", bannerT: "Рақамли Каталог", bannerD: "Энг сифатли молларни осон топинг",
-                addCart: "+ Саватга", itemsText: "ta маҳсулот",
+                addCart: "+ Саватга", itemsText: "та маҳсулот", stockLabel: "Қолдиқ:",
                 contactT: "Дўкон маълумотлари", addrTag: "Манзил:", phoneTag: "Сотувчи:", callBtn: "📞 Сотувчига қўнғироқ қилиш",
                 totalPay: "Умумий сумма:", submitReq: "Дўконга сўров юбориш ➔",
-                popupTitle: "Буюртма қабул қилинди", popupMsg: "Буюртмангиз muvaffaqiyatli қабул қилинди! Сиз билан 24 соат ичида боғланамиз."
+                popupTitle: "Буюртма қабул қилинди", popupMsg: "Буюртмангиз муваффақиятли қабул қилинди! Сиз билан 24 соат ичида боғланамиз.",
+                noProduct: "Маҳсулот йўқ", serverError: "Сервер алоқа хатоси!",
+                shopClosedTitle: "Дўкон ёпиқ", shopClosedMsg: "Дўконимиз вақтинчалик ёпиқ. Тез орада қайтамиз!"
             }
         };
+
+        // === YORDAMCHI FUNKSIYALAR (YANGI BAZA MODELI) ===
+        // Mahsulotning to'liq rasm manzilini qaytaradi (image_path bo'sh bo'lsa placeholder)
+        function getProductImage(p) {
+            return p.image_path ? `${API_BASE}${p.image_path}` : PLACEHOLDER_IMG;
+        }
+
+        // Chegirma bormi? (discount_price > 0 va asl narxdan kichik bo'lsa)
+        function hasDiscount(p) {
+            return p.discount_price && p.discount_price > 0 && p.discount_price < p.price;
+        }
+
+        // Sotuv (joriy) narxini qaytaradi: chegirma bo'lsa discount_price, aks holda price
+        function getEffectivePrice(p) {
+            return hasDiscount(p) ? p.discount_price : p.price;
+        }
 
         function checkUserAuthentication() {
             if (window.Telegram && window.Telegram.WebApp) {
                 Telegram.WebApp.ready();
                 Telegram.WebApp.expand();
                 telegramUser = Telegram.WebApp.initDataUnsafe.user || { id: 5294763020, first_name: "Muhammadqodir", last_name: "Mirzaboyev" };
-                
-                if (!localStorage.getItem(`reg_${telegramUser.id}`)) {
-                    document.getElementById('auth-page').style.display = 'flex';
-                } else {
-                    showMainApp();
-                }
+            } else {
+                // Brauzerda sinash uchun zaxira foydalanuvchi
+                telegramUser = { id: 5294763020, first_name: "Muhammadqodir", last_name: "Mirzaboyev" };
+            }
+
+            if (!localStorage.getItem(`reg_${telegramUser.id}`)) {
+                document.getElementById('auth-page').style.display = 'flex';
+            } else {
+                showMainApp();
             }
         }
 
@@ -267,6 +296,7 @@
             fetchProducts();
             updateCartUI();
             updateProfileUI();
+            checkShopStatus();
         }
 
         function setRegLang(lang) {
@@ -303,7 +333,8 @@
             updateCartUI();
             updateProfileUI();
             renderCategoriesChips();
-            renderProducts(allProducts); 
+            renderKatalogTab();
+            renderProducts(allProducts);
             if (document.getElementById('page-savat').classList.contains('active')) renderCartPage();
         }
 
@@ -321,17 +352,17 @@
             document.getElementById(`page-${tabId}`).classList.add('active');
             element.classList.add('active');
             if (tabId === 'savat') renderCartPage();
-            updateCartUI(); 
+            updateCartUI();
         }
 
         function navigateToCartTab() {
             switchTab('savat', document.querySelectorAll('.nav-item')[2]);
         }
 
-        // TUGADI: Dinamik kategoriyalarni serverdan olish drayveri
+        // === KATEGORIYALAR (YANGI BACKEND: id, name, product_count) ===
         async function fetchCategories() {
             try {
-                const response = await fetch(`${API_BASE}/get-categories`, { headers: { "X-Tunnel-Skip-Anti-Phishing-Page": "true" } });
+                const response = await fetch(`${API_BASE}/get-categories`);
                 allCategories = await response.json();
                 renderCategoriesChips();
                 renderKatalogTab();
@@ -342,14 +373,15 @@
 
         function renderCategoriesChips() {
             const container = document.getElementById('dynamic-categories-scroll');
-            // Faqat barchasi tugmasini qoldirib qolganini tozalaymiz
+            // Faqat "Barchasi" tugmasini qoldirib, qolganini tozalaymiz
             container.innerHTML = `<button class="cat-chip ${selectedCategoryFilter === 'all' ? 'active' : ''}" id="cat-all" onclick="selectCategory('all', this)">${dictionary[currentLang].catAll}</button>`;
-            
+
             allCategories.forEach(c => {
                 const btn = document.createElement('button');
-                btn.className = `cat-chip ${selectedCategoryFilter === c.name ? 'active' : ''}`;
+                // Endi filtr kategoriya IDsi bo'yicha (c.id)
+                btn.className = `cat-chip ${selectedCategoryFilter === c.id ? 'active' : ''}`;
                 btn.innerText = c.name;
-                btn.onclick = function() { selectCategory(c.name, this); };
+                btn.onclick = function() { selectCategory(c.id, this); };
                 container.appendChild(btn);
             });
         }
@@ -357,14 +389,16 @@
         function renderKatalogTab() {
             const container = document.getElementById('dynamic-katalog-list');
             container.innerHTML = '';
-            
+
             allCategories.forEach(c => {
                 const row = document.createElement('div');
                 row.className = 'katalog-row';
                 row.onclick = function() {
                     switchTab('asosiy', document.querySelectorAll('.nav-item')[0]);
-                    selectedCategoryFilter = c.name;
-                    fetchProducts();
+                    // Kategoriya IDsi bo'yicha filtr o'rnatamiz
+                    selectedCategoryFilter = c.id;
+                    renderCategoriesChips();
+                    renderProducts(allProducts);
                 };
                 row.innerHTML = `
                     <div class="katalog-row-left">
@@ -377,43 +411,54 @@
             });
         }
 
+        // === MAHSULOTLAR (YANGI BACKEND: id, category_id, name, price, discount_price, stock, unit, image_path, description) ===
         async function fetchProducts() {
             try {
-                const response = await fetch(`${API_BASE}/get-products`, { headers: { "X-Tunnel-Skip-Anti-Phishing-Page": "true" } });
+                const response = await fetch(`${API_BASE}/get-products`);
                 allProducts = await response.json();
                 renderProducts(allProducts);
             } catch (error) {
-                document.getElementById('products-container').innerHTML = `<div style="grid-column:span 2;text-align:center;color:red;padding:40px 10px;font-weight:600;">Server aloqa xatosi!</div>`;
+                document.getElementById('products-container').innerHTML = `<div style="grid-column:span 2;text-align:center;color:red;padding:40px 10px;font-weight:600;">${dictionary[currentLang].serverError}</div>`;
             }
         }
 
-        // TUZATILDI: Yangi bazadagi `unit_type` va `old_price` arxitekturasini to'g'ri render qilish
         function renderProducts(products) {
             const container = document.getElementById('products-container');
             container.innerHTML = '';
-            
+
             let filtered = products;
+            // Kategoriya bo'yicha filtr (category_id orqali). == ishlatamiz, chunki ID raqam yoki string bo'lishi mumkin
             if (selectedCategoryFilter !== 'all') {
-                filtered = products.filter(p => p.category === selectedCategoryFilter);
+                filtered = filtered.filter(p => p.category_id == selectedCategoryFilter);
             }
 
+            // Qidiruv (mahsulot nomi bo'yicha) - saqlanib qoldi
             const q = document.getElementById('search-input').value.toLowerCase();
             if (q) {
-                filtered = filtered.filter(p => p.title.toLowerCase().includes(q));
+                filtered = filtered.filter(p => (p.name || '').toLowerCase().includes(q));
             }
 
-            if(filtered.length === 0) { container.innerHTML = `<div style="grid-column:span 2;text-align:center;color:#888;padding:20px;">Mahsulot yo'q</div>`; return; }
-            
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="grid-column:span 2;text-align:center;color:#888;padding:20px;">${dictionary[currentLang].noProduct}</div>`;
+                return;
+            }
+
+            const d = dictionary[currentLang];
+
             filtered.forEach(p => {
+                // Chegirma belgisi va ustidan chizilgan asl narx
                 let discountBadge = '';
-                if (p.old_price && p.old_price > p.price) {
-                    const pct = Math.round(((p.old_price - p.price) / p.old_price) * 100);
+                let oldPriceHtml = '';
+                if (hasDiscount(p)) {
+                    const pct = Math.round(((p.price - p.discount_price) / p.price) * 100);
                     discountBadge = `<div class="discount-tag">-${pct}%</div>`;
+                    oldPriceHtml = `<span class="old-price">${Number(p.price).toLocaleString()} so'm</span>`;
                 }
 
-                const imgUrl = p.image_url ? p.image_url : "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400";
-                
-                let actionBtnHtml = `<button class="add-btn" onclick="addToCart(${p.id})">${dictionary[currentLang].addCart}</button>`;
+                const imgUrl = getProductImage(p);
+                const effectivePrice = getEffectivePrice(p);
+
+                let actionBtnHtml = `<button class="add-btn" onclick="addToCart(${p.id})">${d.addCart}</button>`;
                 if (cart[p.id] && cart[p.id].quantity > 0) {
                     actionBtnHtml = `
                         <div class="card-qty-control">
@@ -423,18 +468,18 @@
                         </div>`;
                 }
 
-                // Xatolik bartaraf etildi: p.unit_type donami, qopmi to'g'ri o'qiladi
-                const unitStr = p.unit_type ? p.unit_type : "dona";
+                // O'lchov birligi: yangi backendda p.unit (masalan: 'dona', 'metr')
+                const unitStr = p.unit ? p.unit : "dona";
 
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
                     ${discountBadge}
-                    <img src="${imgUrl}" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400'">
+                    <img src="${imgUrl}" class="product-img" onerror="this.src='${PLACEHOLDER_IMG}'">
                     <div class="product-info">
-                        <h3 class="product-title">${p.title}</h3>
-                        <span class="product-stock">Qoldiq: ${p.stock} (${unitStr})</span>
-                        <div class="current-price">${p.price.toLocaleString()} so'm</div>
+                        <h3 class="product-title">${p.name}</h3>
+                        <span class="product-stock">${d.stockLabel} ${p.stock} (${unitStr})</span>
+                        <div class="current-price">${Number(effectivePrice).toLocaleString()} so'm${oldPriceHtml}</div>
                         <div id="product-action-box-${p.id}">${actionBtnHtml}</div>
                     </div>`;
                 container.appendChild(card);
@@ -444,11 +489,18 @@
         function addToCart(id) {
             const product = allProducts.find(p => p.id === id);
             if (!product) return;
-            cart[id] = { id: product.id, title: product.title, price: product.price, quantity: 1 };
+            // Savatga sotuv narxi (chegirma hisobga olingan holda) saqlanadi
+            cart[id] = {
+                id: product.id,
+                title: product.name,
+                price: getEffectivePrice(product),
+                quantity: 1,
+                unit: product.unit || "dona"
+            };
             localStorage.setItem('tg_shop_cart', JSON.stringify(cart));
-            isCartPanelManuallyClosed = false; 
+            isCartPanelManuallyClosed = false;
             updateCartUI();
-            renderProducts(allProducts); 
+            renderProducts(allProducts);
         }
 
         function changeQuantity(id, delta) {
@@ -457,7 +509,7 @@
             if (cart[id].quantity <= 0) delete cart[id];
             localStorage.setItem('tg_shop_cart', JSON.stringify(cart));
             updateCartUI();
-            renderProducts(allProducts); 
+            renderProducts(allProducts);
             if (document.getElementById('page-savat').classList.contains('active')) renderCartPage();
         }
 
@@ -485,7 +537,7 @@
 
             const floatingCart = document.getElementById('floating-cart');
             const badge = document.getElementById('nav-cart-badge');
-            
+
             const isAtCartTab = document.getElementById('page-savat').classList.contains('active');
 
             if (totalItems > 0) {
@@ -493,7 +545,7 @@
                 badge.innerText = totalItems;
                 document.getElementById('cart-actions-container').style.display = 'block';
                 document.getElementById('txt-total-pay').innerText = `${d.totalPay} ${totalPrice.toLocaleString()} so'm`;
-                
+
                 if (!isCartPanelManuallyClosed && !isAtCartTab) {
                     floatingCart.style.display = 'flex';
                 } else {
@@ -508,11 +560,11 @@
 
         function renderCartPage() {
             const container = document.getElementById('cart-items-wrapper');
-            if (Object.keys(cart).length === 0) { 
-                container.innerHTML = `<div style="text-align:center;padding:50px 20px;color:#888;font-weight:600;">${dictionary[currentLang].emptyCart}</div>`; 
-                return; 
+            if (Object.keys(cart).length === 0) {
+                container.innerHTML = `<div style="text-align:center;padding:50px 20px;color:#888;font-weight:600;">${dictionary[currentLang].emptyCart}</div>`;
+                return;
             }
-            
+
             let html = `<h3 style="margin-top:0; margin-bottom:15px; font-size:18px;">${dictionary[currentLang].cartTab}</h3>`;
             Object.values(cart).forEach(i => {
                 html += `
@@ -536,10 +588,10 @@
                 document.getElementById('prof-stat-id').innerText = telegramUser.id;
                 document.getElementById('prof-stat-status').innerText = currentLang === 'uz' ? 'Lotin' : 'Кирилл';
                 document.getElementById('prof-status').innerText = dictionary[currentLang].status;
-                
+
                 let nameStr = telegramUser.first_name + (telegramUser.last_name ? " " + telegramUser.last_name : "");
                 document.getElementById('prof-display-name').innerText = nameStr;
-                
+
                 const localData = JSON.parse(localStorage.getItem(`reg_${telegramUser.id}`));
                 if (localData) {
                     if (localData.name) document.getElementById('prof-display-name').innerText = localData.name;
@@ -555,28 +607,93 @@
         function selectCategory(cat, element) {
             document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
             element.classList.add('active');
+            // cat = 'all' yoki kategoriya IDsi
             selectedCategoryFilter = cat;
             renderProducts(allProducts);
         }
 
-        function sendOrderRequestToAdmin() {
+        // Buyurtmani to'g'ridan-to'g'ri API ga yuboradi (api.py adminga Telegram xabar yuboradi)
+        async function sendOrderRequestToAdmin() {
             if (Object.keys(cart).length === 0) return;
-            
-            if (window.Telegram && window.Telegram.WebApp) {
-                const webapp = window.Telegram.WebApp;
-                webapp.showPopup({
-                    title: dictionary[currentLang].popupTitle,
-                    message: dictionary[currentLang].popupMsg,
-                    buttons: [{type: 'ok'}]
-                }, function(buttonId) {
-                    webapp.sendData(JSON.stringify({ order_request: cart }));
-                    clearCartCompletely();
-                    switchTab('asosiy', document.querySelectorAll('.nav-item')[0]);
+
+            // Do'kon yopiq bo'lsa buyurtmani bloklaymiz
+            if (shopIsClosed) {
+                showSimplePopup(dictionary[currentLang].shopClosedTitle, dictionary[currentLang].shopClosedMsg);
+                return;
+            }
+
+            // Foydalanuvchi ma'lumotlari (ro'yxatdan o'tgan localStorage'dan)
+            const reg = JSON.parse(localStorage.getItem(`reg_${telegramUser.id}`)) || {};
+            let tgName = telegramUser.first_name + (telegramUser.last_name ? " " + telegramUser.last_name : "");
+
+            // Savatni API kutgan ro'yxat formatiga aylantiramiz
+            const items = Object.values(cart).map(i => ({
+                id: i.id,
+                name: i.title,
+                price: i.price,
+                quantity: i.quantity,
+                unit: i.unit || "dona"
+            }));
+            const totalPrice = items.reduce((s, i) => s + i.price * i.quantity, 0);
+
+            const payload = {
+                user_id: telegramUser.id,
+                user_name: reg.name || tgName || "Mehmon",
+                user_phone: reg.phone || "-",
+                items: items,
+                total_price: totalPrice
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/api/orders`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
-            } else {
-                alert(dictionary[currentLang].popupMsg);
+
+                if (!res.ok) {
+                    // Do'kon yopiq (403) yoki boshqa xatolik
+                    if (res.status === 403) {
+                        shopIsClosed = true;
+                        showSimplePopup(dictionary[currentLang].shopClosedTitle, dictionary[currentLang].shopClosedMsg);
+                    } else {
+                        showSimplePopup("Xatolik", dictionary[currentLang].serverError);
+                    }
+                    return;
+                }
+
+                // Muvaffaqiyatli — chiroyli popup, savatni tozalaymiz
+                showSimplePopup(dictionary[currentLang].popupTitle, dictionary[currentLang].popupMsg);
                 clearCartCompletely();
                 switchTab('asosiy', document.querySelectorAll('.nav-item')[0]);
+            } catch (e) {
+                showSimplePopup("Xatolik", dictionary[currentLang].serverError);
+            }
+        }
+
+        // Telegram bo'lsa native popup, bo'lmasa oddiy alert
+        function showSimplePopup(title, message) {
+            if (window.Telegram && window.Telegram.WebApp && Telegram.WebApp.showPopup) {
+                try {
+                    Telegram.WebApp.showPopup({ title: title, message: message, buttons: [{ type: 'ok' }] });
+                    return;
+                } catch (e) { /* showPopup ba'zan ishlamasligi mumkin — alert'ga o'tamiz */ }
+            }
+            alert(title + "\n\n" + message);
+        }
+
+        // Do'kon holatini serverdan tekshirish (yopiq bo'lsa ogohlantirish)
+        async function checkShopStatus() {
+            try {
+                const res = await fetch(`${API_BASE}/api/settings`);
+                const s = await res.json();
+                shopIsClosed = (s.shop_status === 'closed');
+                if (shopIsClosed) {
+                    showSimplePopup(dictionary[currentLang].shopClosedTitle, dictionary[currentLang].shopClosedMsg);
+                }
+            } catch (e) {
+                // Sozlama olinmasa, do'kon ochiq deb hisoblaymiz
+                shopIsClosed = false;
             }
         }
 
