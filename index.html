@@ -216,8 +216,9 @@
 
     <script>
         // === YANGI BACKEND SOZLAMALARI ===
-        // Public devtunnel manzili (Telegram WebApp telefondan shu manzilga ulanadi)
-        const API_BASE = "https://829t3538-8000.inc1.devtunnels.ms";
+        // Same-origin (nisbiy) manzil: WebApp qaysi hostdan ochilsa (tunnel yoki doimiy server),
+        // API va rasmlar ham o'sha hostga ketadi. Server o'zgarsa, kodni tahrirlash shart emas.
+        const API_BASE = "";
         const PLACEHOLDER_IMG = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400";
 
         let allProducts = [];
@@ -682,14 +683,30 @@
             alert(title + "\n\n" + message);
         }
 
-        // Do'kon holatini serverdan tekshirish (yopiq bo'lsa ogohlantirish)
+        // Do'kon holati va ma'lumotlarini serverdan olib, ilovaga joylashtirish
         async function checkShopStatus() {
             try {
                 const res = await fetch(`${API_BASE}/api/settings`);
                 const s = await res.json();
+
+                // 1) Do'kon holati (yopiq bo'lsa ogohlantirish)
                 shopIsClosed = (s.shop_status === 'closed');
                 if (shopIsClosed) {
                     showSimplePopup(dictionary[currentLang].shopClosedTitle, dictionary[currentLang].shopClosedMsg);
+                }
+
+                // 2) Do'kon ma'lumotlarini Sozlamalardan ilovaga yozamiz (qotirilgan emas)
+                if (s.shop_name) {
+                    document.getElementById('app-header-title').innerText = s.shop_name;
+                }
+                if (s.shop_address) {
+                    document.getElementById('lbl-shop-address').innerText = s.shop_address;
+                }
+                if (s.shop_phone) {
+                    document.getElementById('lbl-shop-phone').innerText = s.shop_phone;
+                    // Qo'ng'iroq tugmasi ham real raqamga ulanadi
+                    const callBtn = document.getElementById('btn-call-shop');
+                    callBtn.setAttribute('href', 'tel:' + s.shop_phone.replace(/\s/g, ''));
                 }
             } catch (e) {
                 // Sozlama olinmasa, do'kon ochiq deb hisoblaymiz
