@@ -271,8 +271,9 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // Public devtunnel manzili (admin panelni istalgan qurilmadan ochish uchun)
-        const API = "https://829t3538-8000.inc1.devtunnels.ms";
+        // Same-origin (nisbiy) manzil: sahifa qayerdan ochilsa, API ham o'sha hostga ketadi.
+        // 127.0.0.1/admin -> lokal (tez), tunnel/admin -> tunnel. Kodni o'zgartirishsiz ishlaydi.
+        const API = "";
         let myChart = null;
         let ordersInterval = null;
         let currentOrderStatus = 'yangi';
