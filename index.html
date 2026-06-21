@@ -99,7 +99,19 @@
         .contact-card { background-color: var(--white); padding: 20px; border-radius: 16px; border: 1px solid var(--border-color); margin-top: 15px; }
         .contact-title { font-size: 15px; font-weight: 700; color: var(--navy-blue); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; }
         .contact-row { font-size: 13px; margin-bottom: 10px; color: #444; }
-        .call-now-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background-color: #25D366; color: var(--white); text-decoration: none; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; margin-top: 5px; }
+        .call-now-btn { box-sizing: border-box; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background-color: #25D366; color: var(--white); text-decoration: none; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; margin-top: 5px; }
+
+        /* BUYURTMALAR TARIXI (mijoz tomoni) */
+        .order-history-card { background-color: #FAFBFC; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+        .order-hist-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .order-hist-date { font-size: 12px; color: var(--gray-text); }
+        .order-hist-status { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+        .ohs-yangi { background: #FFF0E5; color: var(--orange); }
+        .ohs-korib { background: #E5F0FF; color: #2563EB; }
+        .ohs-arxiv { background: #E6F7EC; color: #16A34A; }
+        .order-hist-item { font-size: 13px; color: var(--text-color); padding: 2px 0; }
+        .order-hist-total { font-size: 14px; font-weight: 700; color: var(--navy-blue); margin-top: 8px; border-top: 1px dashed var(--border-color); padding-top: 8px; }
+        .order-hist-empty { text-align: center; color: var(--gray-text); font-size: 13px; padding: 20px 10px; }
 
         /* FLOATING FOOTER PANEL */
         .cart-footer { position: fixed; bottom: 78px; left: 12px; right: 12px; background-color: var(--navy-blue); padding: 12px 16px; border-radius: 16px; box-shadow: 0 8px 25px rgba(11,25,44,0.25); display: none; align-items: center; justify-content: space-between; z-index: 150; color: var(--white); animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -193,6 +205,13 @@
                 <div class="contact-row">📞 <strong id="lbl-phone-tag">Sotuvchi:</strong> <span id="lbl-shop-phone">+998 90 123 45 67</span></div>
                 <a href="tel:+998901234567" class="call-now-btn" id="btn-call-shop">📞 Sotuvchiga qo'ng'iroq qilish</a>
             </div>
+
+            <div class="contact-card" style="margin-top:15px;">
+                <h3 class="contact-title">🧾 <span id="lbl-orders-history">Buyurtmalarim tarixi</span></h3>
+                <div id="my-orders-list">
+                    <div class="order-hist-empty" id="orders-loading">Yuklanmoqda...</div>
+                </div>
+            </div>
         </div>
 
         <div class="cart-footer" id="floating-cart">
@@ -219,6 +238,10 @@
         // Same-origin (nisbiy) manzil: WebApp qaysi hostdan ochilsa (tunnel yoki doimiy server),
         // API va rasmlar ham o'sha hostga ketadi. Server o'zgarsa, kodni tahrirlash shart emas.
         const API_BASE = "";
+
+        // devtunnels "anti-phishing" ogohlantirish sahifasini o'tkazib yuborish uchun sarlavha.
+        // Doimiy serverga o'tilganda ham zarar qilmaydi (oddiy e'tiborga olinmaydigan sarlavha).
+        const TUNNEL_HEADERS = { "X-Tunnel-Skip-Anti-Phishing-Page": "true" };
         const PLACEHOLDER_IMG = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400";
 
         let allProducts = [];
@@ -241,7 +264,9 @@
                 totalPay: "Umumiy summa:", submitReq: "Do'konga so'rov yuborish ➔",
                 popupTitle: "Buyurtma qabul qilindi", popupMsg: "Buyurtmangiz muvaffaqiyatli qabul qilindi! Siz bilan 24 soat ichida bog'lanamiz.",
                 noProduct: "Mahsulot yo'q", serverError: "Server aloqa xatosi!",
-                shopClosedTitle: "Do'kon yopiq", shopClosedMsg: "Do'konimiz vaqtinchalik yopiq. Tez orada qaytamiz!"
+                shopClosedTitle: "Do'kon yopiq", shopClosedMsg: "Do'konimiz vaqtinchalik yopiq. Tez orada qaytamiz!",
+                ordersHistoryT: "Buyurtmalarim tarixi", ordersEmpty: "Hali buyurtma bermagansiz 🧾", orderTotal: "Jami:",
+                stYangi: "Qabul qilindi", stKorib: "Ko'rib chiqilmoqda", stArxiv: "Yakunlandi"
             },
             kr: {
                 lblName: "Исм ва Фамилия", lblPhone: "Телефон рақами", btnReg: "Рўйхатдан ўтиш",
@@ -253,7 +278,9 @@
                 totalPay: "Умумий сумма:", submitReq: "Дўконга сўров юбориш ➔",
                 popupTitle: "Буюртма қабул қилинди", popupMsg: "Буюртмангиз муваффақиятли қабул қилинди! Сиз билан 24 соат ичида боғланамиз.",
                 noProduct: "Маҳсулот йўқ", serverError: "Сервер алоқа хатоси!",
-                shopClosedTitle: "Дўкон ёпиқ", shopClosedMsg: "Дўконимиз вақтинчалик ёпиқ. Тез орада қайтамиз!"
+                shopClosedTitle: "Дўкон ёпиқ", shopClosedMsg: "Дўконимиз вақтинчалик ёпиқ. Тез орада қайтамиз!",
+                ordersHistoryT: "Буюртмаларим тарихи", ordersEmpty: "Ҳали буюртма бермагансиз 🧾", orderTotal: "Жами:",
+                stYangi: "Қабул қилинди", stKorib: "Кўриб чиқилмоқда", stArxiv: "Якунланди"
             }
         };
 
@@ -330,6 +357,7 @@
             document.getElementById('lbl-phone-tag').innerText = d.phoneTag;
             document.getElementById('btn-call-shop').innerText = d.callBtn;
             document.getElementById('btn-submit-order').innerText = d.submitReq;
+            document.getElementById('lbl-orders-history').innerText = d.ordersHistoryT;
 
             updateCartUI();
             updateProfileUI();
@@ -337,6 +365,7 @@
             renderKatalogTab();
             renderProducts(allProducts);
             if (document.getElementById('page-savat').classList.contains('active')) renderCartPage();
+            if (document.getElementById('page-profil').classList.contains('active')) loadMyOrders();
         }
 
         function submitRegistration() {
@@ -353,6 +382,7 @@
             document.getElementById(`page-${tabId}`).classList.add('active');
             element.classList.add('active');
             if (tabId === 'savat') renderCartPage();
+            if (tabId === 'profil') loadMyOrders();
             updateCartUI();
         }
 
@@ -363,7 +393,7 @@
         // === KATEGORIYALAR (YANGI BACKEND: id, name, product_count) ===
         async function fetchCategories() {
             try {
-                const response = await fetch(`${API_BASE}/get-categories`);
+                const response = await fetch(`${API_BASE}/get-categories`, { headers: TUNNEL_HEADERS });
                 allCategories = await response.json();
                 renderCategoriesChips();
                 renderKatalogTab();
@@ -415,7 +445,7 @@
         // === MAHSULOTLAR (YANGI BACKEND: id, category_id, name, price, discount_price, stock, unit, image_path, description) ===
         async function fetchProducts() {
             try {
-                const response = await fetch(`${API_BASE}/get-products`);
+                const response = await fetch(`${API_BASE}/get-products`, { headers: TUNNEL_HEADERS });
                 allProducts = await response.json();
                 renderProducts(allProducts);
             } catch (error) {
@@ -601,6 +631,60 @@
             }
         }
 
+        // Sana/vaqtni o'qiladigan ko'rinishga keltiradi (UTC -> mahalliy vaqt)
+        function formatOrderDate(s) {
+            if (!s) return '';
+            try {
+                const d = new Date(s.replace(' ', 'T') + 'Z');
+                if (isNaN(d.getTime())) return s;
+                const pad = n => String(n).padStart(2, '0');
+                return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+            } catch (e) { return s; }
+        }
+
+        // Buyurtma holatining matni va rangi (mijoz uchun tushunarli)
+        function orderStatusInfo(status) {
+            const d = dictionary[currentLang];
+            if (status === 'korib_chiqildi') return { text: d.stKorib, cls: 'ohs-korib' };
+            if (status === 'arxiv') return { text: d.stArxiv, cls: 'ohs-arxiv' };
+            return { text: d.stYangi, cls: 'ohs-yangi' };
+        }
+
+        // Mijozning o'z buyurtmalari tarixini serverdan olib ko'rsatadi (faqat shu foydalanuvchi)
+        async function loadMyOrders() {
+            const container = document.getElementById('my-orders-list');
+            if (!telegramUser) return;
+            const d = dictionary[currentLang];
+            container.innerHTML = `<div class="order-hist-empty">${d.loading}</div>`;
+            try {
+                const res = await fetch(`${API_BASE}/api/orders/user/${telegramUser.id}`, { headers: TUNNEL_HEADERS });
+                const orders = await res.json();
+
+                if (!Array.isArray(orders) || orders.length === 0) {
+                    container.innerHTML = `<div class="order-hist-empty">${d.ordersEmpty}</div>`;
+                    return;
+                }
+
+                container.innerHTML = orders.map(o => {
+                    const st = orderStatusInfo(o.status);
+                    const itemsHtml = (o.items || []).map(i =>
+                        `<div class="order-hist-item">• ${i.name} — ${i.quantity} ${i.unit || ''} × ${Number(i.price).toLocaleString()} so'm</div>`
+                    ).join('');
+                    return `
+                        <div class="order-history-card">
+                            <div class="order-hist-top">
+                                <span class="order-hist-date">🕒 ${formatOrderDate(o.created_at)}</span>
+                                <span class="order-hist-status ${st.cls}">${st.text}</span>
+                            </div>
+                            ${itemsHtml}
+                            <div class="order-hist-total">${d.orderTotal} ${Number(o.total_price).toLocaleString()} so'm</div>
+                        </div>`;
+                }).join('');
+            } catch (e) {
+                container.innerHTML = `<div class="order-hist-empty">${d.serverError}</div>`;
+            }
+        }
+
         function filterProducts() {
             renderProducts(allProducts);
         }
@@ -648,7 +732,7 @@
             try {
                 const res = await fetch(`${API_BASE}/api/orders`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', ...TUNNEL_HEADERS },
                     body: JSON.stringify(payload)
                 });
 
@@ -686,7 +770,7 @@
         // Do'kon holati va ma'lumotlarini serverdan olib, ilovaga joylashtirish
         async function checkShopStatus() {
             try {
-                const res = await fetch(`${API_BASE}/api/settings`);
+                const res = await fetch(`${API_BASE}/api/settings`, { headers: TUNNEL_HEADERS });
                 const s = await res.json();
 
                 // 1) Do'kon holati (yopiq bo'lsa ogohlantirish)
